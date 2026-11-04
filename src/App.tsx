@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
-  ArrowDown, ArrowRight, ArrowUpRight, Check, ChevronDown, Instagram,
+  ArrowDown, ArrowRight, ArrowUpRight, ChevronDown, Instagram,
   Menu, Sparkles, X,
 } from "lucide-react";
 
