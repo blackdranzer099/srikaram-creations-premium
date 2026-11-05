@@ -80,7 +80,7 @@ test("mobile layout has no horizontal overflow and enquiry is usable", async ({ 
     document: document.documentElement.scrollWidth,
   }));
   expect(dimensions.document, "mobile page should not overflow horizontally").toBeLessThanOrEqual(dimensions.viewport + 1);
-  await page.getByRole("button", { name: /MAKE AN ENQUIRY/i }).click();
+  await page.locator(".header-cta").click();
   const dialog = page.locator(".enquiry-modal");
   await expect(dialog).toBeVisible();
   await expect(dialog.getByLabel("Your name")).toBeVisible();
