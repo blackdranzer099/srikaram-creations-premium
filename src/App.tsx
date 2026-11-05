@@ -83,11 +83,12 @@ function App() {
   }, [lightbox, activeImage, filteredGallery]);
 
   const openEnquiry = () => { setSubmitted(false); setEnquiryOpen(true); closeMenu(); };
-  const submitEnquiry = (event: React.FormEvent<HTMLFormElement>) => {
+  const submitEnquiry = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const body = `Hello Srikaram Creations,%0D%0A%0D%0AName: ${encodeURIComponent(form.name)}%0D%0AEmail: ${encodeURIComponent(form.email)}%0D%0AOccasion: ${encodeURIComponent(form.occasion)}%0D%0AMessage: ${encodeURIComponent(form.message)}%0D%0A%0D%0AI would love to discuss a gifting enquiry.`;
+    const details = `Srikaram Creations enquiry\nName: ${form.name}\nEmail: ${form.email}\nOccasion: ${form.occasion}\nMessage: ${form.message}`;
+    try { await navigator.clipboard.writeText(details); } catch { /* Clipboard access may be unavailable in some browsers. */ }
     setSubmitted(true);
-    window.location.href = `https://www.srikaramcreations.com/?enquiry=${body}`;
+    window.open(SITE, "_blank", "noopener,noreferrer");
   };
 
   return (
