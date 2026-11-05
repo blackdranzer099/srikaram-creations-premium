@@ -47,7 +47,7 @@ test("experience carousel and FAQ accordion respond to interaction", async ({ pa
 test("enquiry dialog validates fields and copies a complete enquiry", async ({ page, context }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto("/");
-  await page.getByRole("button", { name: /MAKE AN ENQUIRY/i }).click();
+  await page.locator(".header-cta").click();
   const dialog = page.locator(".enquiry-modal");
   await expect(dialog).toBeVisible();
   await dialog.getByLabel("Your name").fill("QA Test");
