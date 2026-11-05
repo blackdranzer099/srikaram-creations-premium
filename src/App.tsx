@@ -52,7 +52,7 @@ const scenes = [
 ];
 
 function App() {
- const [menuOpen,setMenuOpen]=useState(false),[activeFilter,setActiveFilter]=useState("All"),[lightbox,setLightbox]=useState<number|null>(null),[experience,setExperience]=useState(0),[faqOpen,setFaqOpen]=useState<number|null>(0),[enquiryOpen,setEnquiryOpen]=useState(false),[submitted,setSubmitted]=useState(false),[progress,setProgress]=useState(0);
+ const [menuOpen,setMenuOpen]=useState(false),[activeFilter,setActiveFilter]=useState("All"),[lightbox,setLightbox]=useState<number|null>(null),[experience,setExperience]=useState(0),[faqOpen,setFaqOpen]=useState<number|null>(0),[enquiryOpen,setEnquiryOpen]=useState(false),[submitted,setSubmitted]=useState(false),[copyError,setCopyError]=useState(false),[progress,setProgress]=useState(0);
  const [form,setForm]=useState({name:"",email:"",occasion:"Personal gifting",message:""});
  const reduceMotion=useReducedMotion(); const mainRef=useRef<HTMLElement>(null); const heroTrack=useRef<HTMLElement>(null);
  const filtered=useMemo(()=>activeFilter==="All"?gallery:gallery.filter(x=>x.category===activeFilter),[activeFilter]);
