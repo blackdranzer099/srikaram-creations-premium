@@ -1,189 +1,107 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowDown, ArrowRight, ArrowUpRight, Check, ChevronDown, ChevronLeft, ChevronRight, Instagram, Menu, Sparkles, X } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronDown, ChevronLeft, ChevronRight, Menu, Volume2, VolumeX, X } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 
 gsap.registerPlugin(ScrollTrigger);
-
 const SITE = "https://www.srikaramcreations.com/";
+const photos = {
+  hero: "https://images.unsplash.com/photo-1608755728617-aefab37d2ede?auto=format&fit=crop&w=2400&q=90",
+  intro: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=2000&q=90",
+  atmosphere: "https://images.unsplash.com/photo-1607344645866-009c320c5ab8?auto=format&fit=crop&w=2400&q=90",
+  story: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=2200&q=90",
+  final: "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=2400&q=90"
+};
 const gallery = [
-  { id: 1, title: "A thoughtful welcome", category: "Hampers", label: "01 · CURATED HAMPERS", image: "https://images.unsplash.com/photo-1608755728617-aefab37d2ede?auto=format&fit=crop&w=1500&q=90", description: "A considered collection, beautifully brought together." },
-  { id: 2, title: "Little things, lasting joy", category: "Personalised", label: "02 · PERSONAL TOUCHES", image: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=1200&q=85", description: "Details that make a gift unmistakably theirs." },
-  { id: 3, title: "Celebrate in colour", category: "Festive", label: "03 · FESTIVE MOMENTS", image: "https://images.unsplash.com/photo-1607344645866-009c320c5ab8?auto=format&fit=crop&w=1400&q=85", description: "A little extra magic for the moments that matter." },
-  { id: 4, title: "Objects with a story", category: "Home décor", label: "04 · HOME & LIVING", image: "https://images.unsplash.com/photo-1490312278390-ab64016e0aa9?auto=format&fit=crop&w=1200&q=85", description: "Thoughtful accents for spaces and everyday rituals." },
-  { id: 5, title: "Made to be remembered", category: "Personalised", label: "05 · MEANINGFUL KEEPSAKES", image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=1400&q=85", description: "A keepsake that says what words sometimes cannot." },
-  { id: 6, title: "A beautiful way to say thank you", category: "Hampers", label: "06 · THE ART OF PRESENTATION", image: "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=1200&q=85", description: "Finishing touches that turn a gesture into a memory." },
+  {id:1,title:"The art of a beautiful arrival",category:"Hampers",label:"01 · CURATED HAMPERS",image:photos.hero,description:"Thoughtful details, brought together as one considered gesture."},
+  {id:2,title:"A personal kind of joy",category:"Personalised",label:"02 · PERSONAL TOUCHES",image:photos.intro,description:"Little details that make a gift feel unmistakably theirs."},
+  {id:3,title:"A celebration in full bloom",category:"Festive",label:"03 · FESTIVE MOMENTS",image:"https://images.unsplash.com/photo-1512389142860-9c449e58a543?auto=format&fit=crop&w=1800&q=90",description:"Colour, warmth and thoughtful finishing touches."},
+  {id:4,title:"Objects to keep close",category:"Home décor",label:"04 · HOME & LIVING",image:"https://images.unsplash.com/photo-1490312278390-ab64016e0aa9?auto=format&fit=crop&w=1800&q=90",description:"Everyday objects chosen to bring warmth to a space."},
+  {id:5,title:"Wrapped with intention",category:"Personalised",label:"05 · MEANINGFUL KEEPSAKES",image:"https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=1800&q=90",description:"A keepsake that says more than words can."},
+  {id:6,title:"The finishing touch",category:"Hampers",label:"06 · THE ART OF PRESENTATION",image:"https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=1800&q=90",description:"The final details that turn a gesture into a memory."},
+  {id:7,title:"A reason to gather",category:"Festive",label:"07 · MOMENTS TOGETHER",image:"https://images.unsplash.com/photo-1607344645866-009c320c5ab8?auto=format&fit=crop&w=1800&q=90",description:"A thoughtful way to mark the moments worth celebrating."},
+  {id:8,title:"A little beauty for every day",category:"Home décor",label:"08 · THOUGHTFUL LIVING",image:"https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=1800&q=90",description:"Considered accents for everyday rituals."}
 ];
 const collections = [
-  { n: "01", title: "Personalised gifts", tag: "MADE JUST FOR THEM", image: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=1300&q=85", desc: "Names, notes and little details that make it personal." },
-  { n: "02", title: "Festive hampers", tag: "CELEBRATE BEAUTIFULLY", image: "https://images.unsplash.com/photo-1607344645866-009c320c5ab8?auto=format&fit=crop&w=1200&q=85", desc: "Thoughtful combinations for every season and celebration." },
-  { n: "03", title: "Home décor", tag: "A TOUCH OF SOMETHING SPECIAL", image: "https://images.unsplash.com/photo-1490312278390-ab64016e0aa9?auto=format&fit=crop&w=1200&q=85", desc: "Objects and accents that bring warmth to a space." },
-  { n: "04", title: "Corporate gifting", tag: "MAKE YOUR GESTURE COUNT", image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=1200&q=85", desc: "Considered gifting for teams, clients and partnerships." },
+  {n:"01",title:"Personalised gifts",tag:"MADE JUST FOR THEM",image:photos.intro,desc:"Names, notes and little details that make it personal."},
+  {n:"02",title:"Festive hampers",tag:"CELEBRATE BEAUTIFULLY",image:photos.atmosphere,desc:"Thoughtful combinations for seasons and celebrations."},
+  {n:"03",title:"Home décor",tag:"A TOUCH OF SOMETHING SPECIAL",image:"https://images.unsplash.com/photo-1490312278390-ab64016e0aa9?auto=format&fit=crop&w=1400&q=85",desc:"Objects and accents that bring warmth to a space."},
+  {n:"04",title:"Corporate gifting",tag:"MAKE YOUR GESTURE COUNT",image:photos.story,desc:"Considered gifting for teams, clients and partnerships."}
+];
+const experiences = [
+  {name:"A thoughtful welcome",type:"THE GIFT OF ARRIVAL",copy:"A beautifully considered first impression, assembled with care for the people you are welcoming.",image:photos.hero,detail:"Curated presentation · Personal touches · Occasion-led selection"},
+  {name:"Celebrations, made personal",type:"THE GIFT OF CELEBRATION",copy:"Mark life's milestones with gifts that feel as individual as the people being celebrated.",image:photos.intro,detail:"Personalisation ideas · Keepsake details · Thoughtful wrapping"},
+  {name:"Festive moments",type:"THE GIFT OF TOGETHERNESS",copy:"Bring warmth to seasonal gatherings with considered hampers and details worth remembering.",image:photos.atmosphere,detail:"Seasonal curation · Festive presentation · Group gifting"},
+  {name:"The art of giving thanks",type:"THE GIFT OF APPRECIATION",copy:"A meaningful way to recognise a gesture, celebrate a partnership or simply say thank you.",image:photos.story,detail:"Client appreciation · Team milestones · Custom briefs"},
+  {name:"A beautiful everyday",type:"THE GIFT OF HOME",copy:"Thoughtful objects and accents that bring a little more beauty to everyday spaces.",image:"https://images.unsplash.com/photo-1490312278390-ab64016e0aa9?auto=format&fit=crop&w=1600&q=85",detail:"Home accents · Considered objects · Personal selection"},
+  {name:"Gifting at scale",type:"THE GIFT OF CONNECTION",copy:"Bring a consistent, thoughtful touch to corporate and bulk gifting with a clear creative brief.",image:photos.final,detail:"Corporate gifting · Bulk enquiries · Occasion planning"}
 ];
 const faqs = [
-  ["Can I personalise a gift?", "Yes. Share the occasion, recipient and the personal touches you have in mind. The available options depend on the selected creation."],
-  ["Do you create festive and corporate hampers?", "The website presents festive hampers and corporate gifting as key collection areas. Share your brief with the Srikaram team to discuss a suitable arrangement."],
-  ["Can I enquire about a custom or bulk order?", "Absolutely. Use the enquiry link to contact Srikaram Creations directly with your occasion, quantity, preferred date and ideas."],
-  ["Where can I see the latest products and availability?", "For current collections, product details and availability, please visit the official Srikaram Creations website."],
+ ["Can I personalise a gift?","Share the occasion, recipient and personal touches you have in mind. The available options depend on the selected creation."],
+ ["Do you create festive and corporate hampers?","Festive hampers and corporate gifting are featured collection areas. Share your brief with the Srikaram team to discuss a suitable arrangement."],
+ ["Can I enquire about a custom or bulk order?","Yes. Include your occasion, quantity, preferred date and ideas in your enquiry."],
+ ["Where can I see current products and availability?","For current collections and availability, please contact Srikaram Creations through its official website."]
+];
+const scenes = [
+ {eyebrow:"THE ART OF THOUGHTFUL GIFTING",a:"Give a little",b:"more meaning.",copy:"For the moments that matter, the people who make them special, and the memories worth keeping."},
+ {eyebrow:"PERSONALITY IN EVERY DETAIL",a:"A gift should",b:"feel like them.",copy:"Personal touches, thoughtful choices and considered presentation make a gesture feel truly individual."},
+ {eyebrow:"THE BEAUTY OF PRESENTATION",a:"Make the moment",b:"beautiful.",copy:"From the first impression to the final ribbon, every detail has a part to play."},
+ {eyebrow:"THE SRIKARAM WAY",a:"Thoughtfully made.",b:"Given with love.",copy:"A little more meaning in every moment. Discover the Srikaram approach to gifting."}
 ];
 
 function App() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [activeFilter, setActiveFilter] = useState("All");
-  const [lightbox, setLightbox] = useState<number | null>(null);
-  const [faqOpen, setFaqOpen] = useState<number | null>(0);
-  const [enquiryOpen, setEnquiryOpen] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", occasion: "Personal gifting", message: "" });
-  const reduceMotion = useReducedMotion();
-  const mainRef = useRef<HTMLElement>(null);
-  const filteredGallery = useMemo(() => activeFilter === "All" ? gallery : gallery.filter(item => item.category === activeFilter), [activeFilter]);
-  const activeImage = lightbox === null ? null : filteredGallery.findIndex(item => item.id === lightbox);
-  const closeMenu = () => setMenuOpen(false);
-
-  useEffect(() => {
-    if (reduceMotion) return;
-    const lenis = new Lenis({ duration: 0.9, smoothWheel: true, wheelMultiplier: 0.9, touchMultiplier: 1 });
-    lenis.on("scroll", ScrollTrigger.update);
-    const tick = (time: number) => lenis.raf(time * 1000);
-    gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((element) => {
-        gsap.fromTo(element, { y: 34, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: "power3.out", scrollTrigger: { trigger: element, start: "top 88%", once: true } });
-      });
-      gsap.utils.toArray<HTMLElement>("[data-image-reveal]").forEach((element) => {
-        gsap.fromTo(element, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 1.25, ease: "power3.inOut", scrollTrigger: { trigger: element, start: "top 82%", once: true } });
-      });
-      gsap.utils.toArray<HTMLElement>("[data-parallax]").forEach((element) => {
-        gsap.fromTo(element, { yPercent: -3 }, { yPercent: 3, ease: "none", scrollTrigger: { trigger: element, start: "top bottom", end: "bottom top", scrub: 0.7 } });
-      });
-    }, mainRef);
-    return () => { ctx.revert(); gsap.ticker.remove(tick); lenis.destroy(); };
-  }, [reduceMotion]);
-
-  useEffect(() => {
-    if (lightbox !== null || enquiryOpen || menuOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
-    return () => { document.body.style.overflow = ""; };
-  }, [lightbox, enquiryOpen, menuOpen]);
-
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") { setLightbox(null); setEnquiryOpen(false); }
-      if (lightbox !== null && activeImage !== null) {
-        if (event.key === "ArrowRight") setLightbox(filteredGallery[(activeImage + 1) % filteredGallery.length].id);
-        if (event.key === "ArrowLeft") setLightbox(filteredGallery[(activeImage - 1 + filteredGallery.length) % filteredGallery.length].id);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [lightbox, activeImage, filteredGallery]);
-
-  const openEnquiry = () => { setSubmitted(false); setEnquiryOpen(true); closeMenu(); };
-  const submitEnquiry = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const details = `Srikaram Creations enquiry\nName: ${form.name}\nEmail: ${form.email}\nOccasion: ${form.occasion}\nMessage: ${form.message}`;
-    try { await navigator.clipboard.writeText(details); } catch { /* Clipboard access may be unavailable in some browsers. */ }
-    setSubmitted(true);
-    window.open(SITE, "_blank", "noopener,noreferrer");
-  };
-
-  return (
-    <div className="site-shell">
-      <div className="announcement"><span>THOUGHTFUL GESTURES. BEAUTIFULLY MADE.</span><span className="announcement-right">A LITTLE MORE MEANING IN EVERY MOMENT <b>✳</b></span></div>
-      <header className="header">
-        <a href="#home" className="wordmark" onClick={closeMenu} aria-label="Srikaram Creations home"><span className="wordmark-main">srikaram<span>✳</span></span><span className="wordmark-sub">C R E A T I O N S</span></a>
-        <nav className={menuOpen ? "nav nav-open" : "nav"} aria-label="Main navigation">
-          <a href="#collections" onClick={closeMenu}>Collections</a><a href="#story" onClick={closeMenu}>Our story</a><a href="#gallery" onClick={closeMenu}>The visual edit</a><a href="#approach" onClick={closeMenu}>Our approach</a>
-        </nav>
-        <button className="header-cta" onClick={openEnquiry}>MAKE AN ENQUIRY <ArrowUpRight size={15}/></button>
-        <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "Close menu" : "Open menu"}>{menuOpen ? <X/> : <Menu/>}</button>
-      </header>
-
-      <main ref={mainRef}>
-        <section className="hero" id="home">
-          <div className="hero-copy">
-            <p className="eyebrow"><span className="eyebrow-line"/> THE ART OF THOUGHTFUL GIFTING</p>
-            <h1>Give a little<br/>more <em>meaning.</em></h1>
-            <p className="hero-description">For the moments that matter, the people who make them special, and the memories worth keeping.</p>
-            <div className="hero-actions"><a className="button button-dark" href="#collections">DISCOVER OUR COLLECTIONS <ArrowUpRight size={16}/></a><a className="text-link" href="#story">A little about us <ArrowRight size={15}/></a></div>
-            <div className="hero-note"><span>01 — THE SRIKARAM EDIT</span><span>MADE WITH THOUGHT, GIVEN WITH LOVE</span></div>
-          </div>
-          <div className="hero-visual">
-            <img data-parallax src="https://images.unsplash.com/photo-1608755728617-aefab37d2ede?auto=format&fit=crop&w=1800&q=90" alt="Beautifully wrapped gifts and thoughtful presentation"/>
-            <div className="hero-image-shade"/>
-            <div className="hero-stamp"><Sparkles size={18}/><span>THE JOY IS<br/>IN THE DETAILS</span></div>
-            <div className="hero-image-caption"><span>THE ART OF PRESENTATION</span><span>HYDERABAD · INDIA</span></div>
-            <a className="hero-scroll" href="#collections"><span>SCROLL TO DISCOVER</span><ArrowDown size={15}/></a>
-          </div>
-        </section>
-
-        <section className="intro section-pad" id="story">
-          <div data-reveal><p className="eyebrow"><span className="eyebrow-line"/> A GIFT IS A WAY OF SAYING</p><h2>“I thought of you.”<br/><em>And it shows.</em></h2></div>
-          <div className="intro-aside" data-reveal><p>We believe gifting is more than the exchange of something beautiful. It is a moment of connection — a way to celebrate, appreciate, remember and make someone feel seen.</p><a className="text-link" href="#approach">DISCOVER THE SRIKARAM WAY <ArrowUpRight size={15}/></a></div>
-          <div className="intro-mark">S<span>✳</span>C</div>
-        </section>
-
-        <section className="collections section-pad" id="collections">
-          <div className="section-heading" data-reveal><div><p className="eyebrow"><span className="eyebrow-line"/> CONSIDERED FOR EVERY OCCASION</p><h2>Find your kind<br/>of <em>wonder.</em></h2></div><p className="section-heading-note">A collection of thoughtful gestures,<br/>made for the moments worth celebrating.</p></div>
-          <div className="collection-grid">
-            {collections.map((item, index) => <a className={`collection-card collection-${index + 1}`} href={SITE} target="_blank" rel="noreferrer" key={item.n} data-reveal><div className="collection-image" data-image-reveal><img src={item.image} alt={item.title} loading="lazy"/><span className="collection-arrow"><ArrowUpRight size={19}/></span></div><div className="collection-meta"><span>{item.tag}</span><span>{item.n}</span></div><h3>{item.title}</h3><p className="collection-description">{item.desc}</p></a>)}
-          </div>
-          <div className="collection-bottom"><span>MADE TO BE REMEMBERED</span><button className="text-link text-button" onClick={openEnquiry}>TELL US WHAT YOU HAVE IN MIND <ArrowRight size={15}/></button></div>
-        </section>
-
-        <section className="story">
-          <div className="story-image" data-image-reveal><img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1500&q=90" alt="Creative hands preparing a thoughtful gift"/><span className="story-image-caption">A THOUGHTFUL TOUCH, IN EVERY DETAIL.</span></div>
-          <div className="story-copy" data-reveal><p className="eyebrow"><span className="eyebrow-line"/> THE HEART BEHIND THE GESTURE</p><h2>Made with care.<br/>Remembered <em>by heart.</em></h2><p className="story-body">At Srikaram Creations, the little details are what make a gesture unforgettable. From personal touches to beautifully considered presentation, we bring creativity and care to the way you celebrate the people in your life.</p><button className="button button-outline" onClick={openEnquiry}>LET'S CREATE SOMETHING MEANINGFUL <ArrowUpRight size={16}/></button><span className="story-flourish">With love, always. <span>✳</span></span></div>
-        </section>
-
-        <section className="gallery-section section-pad" id="gallery">
-          <div className="gallery-heading" data-reveal><div><p className="eyebrow"><span className="eyebrow-line"/> THE VISUAL ARCHIVE · 01—06</p><h2>The beauty of<br/><em>being thoughtful.</em></h2></div><p>Little glimpses of the details, textures and finishing touches that make a gift feel personal.</p></div>
-          <div className="gallery-filters" role="group" aria-label="Filter gallery">
-            {["All","Hampers","Personalised","Festive","Home décor"].map(filter => <button key={filter} className={activeFilter === filter ? "filter-pill active" : "filter-pill"} onClick={() => setActiveFilter(filter)}>{filter}</button>)}
-          </div>
-          <motion.div layout className="gallery-grid">
-            <AnimatePresence mode="popLayout">
-              {filteredGallery.map((item, index) => <motion.button layout key={item.id} className={`gallery-card gallery-card-${index % 4}`} onClick={() => setLightbox(item.id)} initial={reduceMotion ? false : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: .97 }} transition={{ duration: .45 }}><div className="gallery-image"><img src={item.image} alt={item.title} loading="lazy"/><span className="gallery-label">{item.label}</span><span className="gallery-open"><ArrowUpRight size={18}/></span></div><span className="gallery-title">{item.title}</span><span className="gallery-category">{item.category}</span></motion.button>)}
-            </AnimatePresence>
-          </motion.div>
-        </section>
-
-        <section className="approach section-pad" id="approach">
-          <div className="approach-header" data-reveal><p className="eyebrow"><span className="eyebrow-line"/> THE SRIKARAM APPROACH</p><h2>Every detail,<br/><em>considered.</em></h2></div>
-          <div className="approach-grid">
-            <article data-reveal><span>01</span><h3>Begin with a thought</h3><p>Tell us about the person, the occasion and the feeling you want your gift to carry.</p></article>
-            <article data-reveal><span>02</span><h3>Make it personal</h3><p>Explore thoughtful choices and personal details that bring your idea to life.</p></article>
-            <article data-reveal><span>03</span><h3>Present with care</h3><p>Bring the gesture together with considered finishing touches and beautiful presentation.</p></article>
-          </div>
-        </section>
-
-        <section className="corporate">
-          <div className="corporate-image"><img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=1600&q=90" alt="Premium gift box ready to be presented"/></div>
-          <div className="corporate-copy" data-reveal><p className="eyebrow"><span className="eyebrow-line"/> FOR TEAMS, CLIENTS & PARTNERS</p><h2>Make your<br/>appreciation <em>personal.</em></h2><p>Thoughtful gifting can bring people closer, celebrate milestones and make business relationships feel more human. Tell us about your corporate or bulk gifting brief.</p><button className="button button-light" onClick={openEnquiry}>ENQUIRE ABOUT CORPORATE GIFTING <ArrowUpRight size={16}/></button></div>
-        </section>
-
-        <section className="quote-band"><span className="quote-mark">“</span><p>The most beautiful gifts<br/>are the ones that <em>mean something.</em></p><span className="quote-credit">THE SRIKARAM WAY <b>✳</b></span></section>
-
-        <section className="faq section-pad">
-          <div className="faq-heading" data-reveal><p className="eyebrow"><span className="eyebrow-line"/> A FEW THINGS YOU MIGHT WONDER</p><h2>Good to <em>know.</em></h2></div>
-          <div className="faq-list">{faqs.map(([question, answer], index) => <div className="faq-item" key={question}><button onClick={() => setFaqOpen(faqOpen === index ? null : index)} aria-expanded={faqOpen === index}><span>{question}</span><ChevronDown className={faqOpen === index ? "faq-chevron active" : "faq-chevron"} size={18}/></button><AnimatePresence initial={false}>{faqOpen === index && <motion.p className="faq-answer" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: .28 }}>{answer}</motion.p>}</AnimatePresence></div>)}</div>
-        </section>
-
-        <section className="contact" id="contact"><div className="contact-inner" data-reveal><p className="eyebrow"><span className="eyebrow-line"/> HAVE A LITTLE SOMETHING IN MIND?</p><h2>Let's make it<br/><em>meaningful.</em></h2><p>Tell us who you're celebrating. We'll help you find a beautiful way to say it.</p><button className="button button-light" onClick={openEnquiry}>START A CONVERSATION <ArrowUpRight size={16}/></button><span className="contact-flower">✳</span></div></section>
-      </main>
-
-      <footer className="footer"><a href="#home" className="wordmark footer-wordmark"><span className="wordmark-main">srikaram<span>✳</span></span><span className="wordmark-sub">C R E A T I O N S</span></a><span className="footer-note">THOUGHTFULLY MADE. BEAUTIFULLY GIVEN.</span><div className="footer-links"><a href="#collections">COLLECTIONS</a><a href="#story">OUR STORY</a><a href={SITE} target="_blank" rel="noreferrer">OFFICIAL SITE</a><a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={17}/></a></div><span className="copyright">© {new Date().getFullYear()} SRIKARAM CREATIONS. MADE WITH MEANING.</span></footer>
-
-      <AnimatePresence>
-        {lightbox !== null && activeImage !== null && <motion.div className="lightbox" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setLightbox(null)}><button className="lightbox-close" onClick={() => setLightbox(null)} aria-label="Close gallery"><X/></button><button className="lightbox-prev" onClick={event => {event.stopPropagation();setLightbox(filteredGallery[(activeImage - 1 + filteredGallery.length) % filteredGallery.length].id)}} aria-label="Previous image"><ChevronLeft/></button><div className="lightbox-content" onClick={event => event.stopPropagation()}><img src={filteredGallery[activeImage].image} alt={filteredGallery[activeImage].title}/><div className="lightbox-caption"><span>{String(activeImage + 1).padStart(2,"0")} / {String(filteredGallery.length).padStart(2,"0")} · {filteredGallery[activeImage].category.toUpperCase()}</span><h3>{filteredGallery[activeImage].title}</h3><p>{filteredGallery[activeImage].description}</p></div></div><button className="lightbox-next" onClick={event => {event.stopPropagation();setLightbox(filteredGallery[(activeImage + 1) % filteredGallery.length].id)}} aria-label="Next image"><ChevronRight/></button></motion.div>}
-        {enquiryOpen && <motion.div className="enquiry-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setEnquiryOpen(false)}><motion.div className="enquiry-modal" initial={{ y: 24, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 24, opacity: 0 }} onClick={event => event.stopPropagation()}><button className="modal-close" onClick={() => setEnquiryOpen(false)} aria-label="Close enquiry"><X/></button><p className="eyebrow"><span className="eyebrow-line"/> A NOTE TO SRIKARAM</p><h2>Let's make<br/><em>it personal.</em></h2><p className="modal-intro">A few details will help you start a conversation with the team.</p><form onSubmit={submitEnquiry}><label>Your name<input required value={form.name} onChange={event => setForm({...form,name:event.target.value})} placeholder="How should we address you?"/></label><label>Email address<input required type="email" value={form.email} onChange={event => setForm({...form,email:event.target.value})} placeholder="you@example.com"/></label><label>What are you planning?<select value={form.occasion} onChange={event => setForm({...form,occasion:event.target.value})}><option>Personal gifting</option><option>Festive hampers</option><option>Wedding or celebration</option><option>Corporate gifting</option><option>Home décor</option><option>Something else</option></select></label><label>Tell us a little more<textarea rows={3} value={form.message} onChange={event => setForm({...form,message:event.target.value})} placeholder="Occasion, quantity, date, ideas..."/></label><button className="button button-dark modal-submit" type="submit">CONTINUE TO SRIKARAM <ArrowUpRight size={16}/></button></form><p className="modal-footnote">We copy your enquiry details and open the official website so you can share them with the Srikaram team. No order is placed here.</p>{submitted && <p className="modal-confirm"><Check size={15}/> Your details are copied. Paste them into the official site contact channel.</p>}</motion.div></motion.div>}
-      </AnimatePresence>
+ const [menuOpen,setMenuOpen]=useState(false),[activeFilter,setActiveFilter]=useState("All"),[lightbox,setLightbox]=useState<number|null>(null),[experience,setExperience]=useState(0),[faqOpen,setFaqOpen]=useState<number|null>(0),[enquiryOpen,setEnquiryOpen]=useState(false),[submitted,setSubmitted]=useState(false),[muted,setMuted]=useState(true),[progress,setProgress]=useState(0);
+ const [form,setForm]=useState({name:"",email:"",occasion:"Personal gifting",message:""});
+ const reduceMotion=useReducedMotion(); const mainRef=useRef<HTMLElement>(null); const heroTrack=useRef<HTMLElement>(null);
+ const filtered=useMemo(()=>activeFilter==="All"?gallery:gallery.filter(x=>x.category===activeFilter),[activeFilter]);
+ const activeIndex=lightbox===null?-1:filtered.findIndex(x=>x.id===lightbox);
+ const move=(dir:number)=>{if(activeIndex>=0)setLightbox(filtered[(activeIndex+dir+filtered.length)%filtered.length].id)};
+ const openEnquiry=()=>{setSubmitted(false);setEnquiryOpen(true);setMenuOpen(false)};
+ const submit=async(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const brief=`Srikaram Creations enquiry\nName: ${form.name}\nEmail: ${form.email}\nOccasion: ${form.occasion}\nMessage: ${form.message}`;try{await navigator.clipboard.writeText(brief)}catch{}setSubmitted(true)};
+ useEffect(()=>{
+  if(reduceMotion)return;
+  const lenis=new Lenis({duration:.85,easing:t=>Math.min(1,1.001-Math.pow(2,-10*t)),smoothWheel:true,touchMultiplier:1});
+  lenis.on("scroll",ScrollTrigger.update);const tick=(t:number)=>lenis.raf(t*1000);gsap.ticker.add(tick);gsap.ticker.lagSmoothing(0);
+  const ctx=gsap.context(()=>{
+   gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach(el=>gsap.fromTo(el,{y:34,opacity:0},{y:0,opacity:1,duration:.95,ease:"power3.out",scrollTrigger:{trigger:el,start:"top 86%",once:true}}));
+   gsap.utils.toArray<HTMLElement>("[data-image-reveal]").forEach(el=>gsap.fromTo(el,{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0% 0 0)",duration:1.35,ease:"power3.inOut",scrollTrigger:{trigger:el,start:"top 84%",once:true}}));
+   gsap.utils.toArray<HTMLElement>("[data-parallax]").forEach(el=>gsap.fromTo(el,{yPercent:-3},{yPercent:3,ease:"none",scrollTrigger:{trigger:el,start:"top bottom",end:"bottom top",scrub:.8}}));
+  },mainRef);
+  return()=>{ctx.revert();gsap.ticker.remove(tick);lenis.destroy()};
+ },[reduceMotion]);
+ useEffect(()=>{
+  const track=heroTrack.current;if(!track)return;
+  const update=()=>{const rect=track.getBoundingClientRect();const total=track.offsetHeight-window.innerHeight;const done=Math.min(1,Math.max(0,-rect.top/Math.max(1,total)));setProgress(done)};
+  update();window.addEventListener("scroll",update,{passive:true});window.addEventListener("resize",update);
+  return()=>{window.removeEventListener("scroll",update);window.removeEventListener("resize",update)};
+ },[]);
+ useEffect(()=>{if(lightbox!==null||enquiryOpen||menuOpen)document.body.style.overflow="hidden";else document.body.style.overflow="";return()=>{document.body.style.overflow=""}},[lightbox,enquiryOpen,menuOpen]);
+ useEffect(()=>{const key=(e:KeyboardEvent)=>{if(e.key==="Escape"){setLightbox(null);setEnquiryOpen(false)}if(lightbox!==null&&e.key==="ArrowRight")move(1);if(lightbox!==null&&e.key==="ArrowLeft")move(-1)};window.addEventListener("keydown",key);return()=>window.removeEventListener("keydown",key)},[lightbox,activeIndex,filtered]);
+ return <div className="site-shell">
+  <div className="announcement"><span>THOUGHTFUL GESTURES. BEAUTIFULLY MADE.</span><span className="announcement-right">A LITTLE MORE MEANING IN EVERY MOMENT <b>✳</b></span></div>
+  <header className="header"><a href="#home" className="wordmark" onClick={()=>setMenuOpen(false)}><span className="wordmark-main">srikaram<span>✳</span></span><span className="wordmark-sub">C R E A T I O N S</span></a><nav className={menuOpen?"nav nav-open":"nav"}><a href="#collections" onClick={()=>setMenuOpen(false)}>Collections</a><a href="#story" onClick={()=>setMenuOpen(false)}>Our story</a><a href="#gallery" onClick={()=>setMenuOpen(false)}>Visual archive</a><a href="#experience" onClick={()=>setMenuOpen(false)}>Experiences</a></nav><button className="header-cta" onClick={openEnquiry}>MAKE AN ENQUIRY <ArrowUpRight size={15}/></button><button className="menu-toggle" onClick={()=>setMenuOpen(!menuOpen)} aria-label="Toggle menu">{menuOpen?<X/>:<Menu/>}</button></header>
+  <main ref={mainRef}>
+   <section className="cinema-hero" id="home" ref={heroTrack}>
+    <div className="cinema-sticky"><img className="cinema-bg" src={photos.hero} alt="Curated gift presentation"/><div className="cinema-scrim"/><div className="cinema-hud"><span>THE SRIKARAM EDIT · INDIA</span><span className="hud-right">SCENE 0{Math.min(4,Math.floor(progress*4)+1)} / 04 <i/></span></div>
+     {scenes.map((s,i)=>{const start=i/4,end=(i+1)/4;const active=progress>=start&&(progress<end||i===3);return <div className={active?"hero-scene scene-active":"hero-scene"} key={s.eyebrow} style={{opacity:active?1:0,transform:active?"translateY(0)":"translateY(26px)"}}><p className="eyebrow light"><span className="eyebrow-line"/> {s.eyebrow}</p><h1>{s.a}<br/><em>{s.b}</em></h1><p className="hero-description">{s.copy}</p>{i===0||i===3?<div className="hero-actions"><a className="button button-gold" href="#collections">EXPLORE THE COLLECTIONS <ArrowUpRight size={16}/></a><button className="button button-glass" onClick={openEnquiry}>MAKE AN ENQUIRY <ArrowUpRight size={16}/></button></div>:null}</div>})}
+     <button className="sound-toggle" onClick={()=>setMuted(!muted)} aria-label={muted?"Sound is muted":"Sound is on"}>{muted?<VolumeX size={17}/>:<Volume2 size={17}/>}</button><a className="hero-scroll" href="#intro"><span>SCROLL TO EXPLORE</span><ArrowDown size={15}/></a><div className="hero-progress"><span style={{transform:`scaleX(${progress})`}}/></div>
     </div>
-  );
+   </section>
+   <section className="chapter intro section-pad" id="intro"><div className="chapter-top"><p className="eyebrow"><span className="eyebrow-line"/> 01 · THE ART OF GIFTING</p><span className="folio">SRIKARAM CREATIONS / 01</span></div><h2 data-reveal>More than a gift.<br/><em>A feeling, thoughtfully given.</em></h2><div className="intro-layout"><div className="intro-photo" data-image-reveal><img data-parallax src={photos.intro} alt="A personal gift beautifully presented"/><span className="photo-tag">PLATE 01 — A PERSONAL TOUCH</span><span className="photo-note">MADE TO FEEL LIKE THEM</span></div><div className="intro-aside" data-reveal><p className="eyebrow"><span className="eyebrow-line"/> THE THOUGHT BEHIND IT</p><h3>“I thought of you.”<br/><em>And it shows.</em></h3><p>We believe gifting is more than the exchange of something beautiful. It is a moment of connection — a way to celebrate, appreciate, remember and make someone feel seen.</p><p>Every choice, detail and finishing touch can turn a simple gesture into something that stays with someone.</p><a className="text-link" href="#collections">DISCOVER THE COLLECTIONS <ArrowUpRight size={15}/></a></div></div></section>
+   <section className="chapter story-volume section-pad" id="story"><div className="chapter-top"><p className="eyebrow"><span className="eyebrow-line"/> 02 · THE SRIKARAM STORY</p><span className="folio">CRAFT / CARE / CONNECTION</span></div><div className="story-layout"><div className="story-copy" data-reveal><p className="eyebrow">THE HEART BEHIND THE GESTURE</p><h2>Made with care.<br/>Remembered <em>by heart.</em></h2><p>At Srikaram Creations, the little details are what make a gesture unforgettable. From personal touches to beautifully considered presentation, we bring creativity and care to the way you celebrate the people in your life.</p><button className="button button-dark" onClick={openEnquiry}>LET'S CREATE SOMETHING MEANINGFUL <ArrowUpRight size={16}/></button></div><div className="story-photo" data-image-reveal><img data-parallax src={photos.story} alt="Beautifully wrapped gift box"/><span className="photo-tag">PLATE 02 — THE FINISHING TOUCH</span></div></div></section>
+   <section className="atmosphere"><img data-parallax src={photos.atmosphere} alt="Festive gifting and celebration"/><div className="atmosphere-shade"/><div className="atmosphere-copy" data-reveal><p className="eyebrow light"><span className="eyebrow-line"/> ATMOSPHERE & OCCASION</p><h2>Designed for<br/><em>the moments that matter.</em></h2><p>For celebrations big and small, and for the people who make them worth remembering.</p><span className="atmosphere-stamp">A LITTLE MORE MEANING · EST. WITH CARE</span></div></section>
+   <section className="scale section-pad"><div className="chapter-top"><p className="eyebrow"><span className="eyebrow-line"/> 03 · THE COLLECTION</p><span className="folio">A THOUGHT FOR EVERY OCCASION</span></div><div className="section-heading" data-reveal><h2>Find your kind<br/>of <em>wonder.</em></h2><p>A considered edit of thoughtful gestures, made for the moments worth celebrating.</p></div><div className="collection-grid">{collections.map((item,i)=><a className={`collection-card collection-${i+1}`} href={SITE} target="_blank" rel="noreferrer" key={item.n}><div className="collection-image" data-image-reveal><img src={item.image} alt={item.title} loading="lazy"/><span className="collection-arrow"><ArrowUpRight/></span></div><div className="collection-meta"><span>{item.tag}</span><span>{item.n}</span></div><h3>{item.title}</h3><p>{item.desc}</p></a>)}</div></section>
+   <section className="gallery-section section-pad" id="gallery"><div className="chapter-top"><p className="eyebrow"><span className="eyebrow-line"/> 04 · VISUAL ARCHIVE</p><span className="folio">CURATED GIFTING FOLIO / 08 PLATES</span></div><div className="gallery-heading" data-reveal><h2>The beauty of<br/><em>being thoughtful.</em></h2><p>Textures, details and finishing touches that make a gift feel personal.</p></div><div className="gallery-filters">{["All","Hampers","Personalised","Festive","Home décor"].map(f=><button key={f} className={activeFilter===f?"filter-pill active":"filter-pill"} onClick={()=>setActiveFilter(f)}>{f}</button>)}</div><div className="gallery-grid">{filtered.map((item,index)=><motion.button layout key={item.id} className={`gallery-card gallery-card-${index%4}`} onClick={()=>setLightbox(item.id)} initial={reduceMotion?false:{opacity:0,y:24}} animate={{opacity:1,y:0}} transition={{duration:.5}}><div className="gallery-image" data-image-reveal><img src={item.image} alt={item.title} loading="lazy"/><span className="gallery-label">{item.label}</span><span className="gallery-open"><ArrowUpRight/></span><span className="gallery-glass"><small>{item.category.toUpperCase()}</small><b>{item.title}</b><span>EXPLORE SPACE ↗</span></span></div><span className="gallery-title">{item.title}</span><span className="gallery-category">{item.category}</span></motion.button>)}</div></section>
+   <section className="experience-section section-pad" id="experience"><div className="chapter-top"><p className="eyebrow"><span className="eyebrow-line"/> 05 · CURATED EXPERIENCES</p><span className="folio">A GIFTING JOURNEY / 0{experience+1}—06</span></div><div className="experience-heading"><h2>Thoughtful ways<br/>to <em>make a moment.</em></h2><div className="carousel-controls"><button onClick={()=>setExperience((experience+5)%6)} aria-label="Previous experience"><ChevronLeft/></button><button onClick={()=>setExperience((experience+1)%6)} aria-label="Next experience"><ChevronRight/></button></div></div><div className="experience-stage"><div className="experience-copy"><AnimatePresence mode="wait"><motion.div key={experience} initial={{opacity:0,y:18}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-12}} transition={{duration:.35}}><span className="experience-number">EXPERIENCE 0{experience+1}</span><p className="eyebrow">{experiences[experience].type}</p><h3>{experiences[experience].name}</h3><div className="gold-rule"/><p>{experiences[experience].copy}</p><div className="experience-detail">{experiences[experience].detail}</div><button className="text-link" onClick={openEnquiry}>ENQUIRE ABOUT THIS EXPERIENCE <ArrowUpRight size={15}/></button></motion.div></AnimatePresence>}<div className="carousel-dots">{experiences.map((x,i)=><button key={x.name} className={experience===i?"dot active":"dot"} onClick={()=>setExperience(i)} aria-label={`Show experience ${i+1}`}/>)}</div></div><div className="experience-image"><AnimatePresence mode="wait"><motion.img key={experience} src={experiences[experience].image} alt={experiences[experience].name} initial={{opacity:0,scale:1.04,clipPath:"inset(0 0 0 100%)"}} animate={{opacity:1,scale:1,clipPath:"inset(0 0 0 0)"}} exit={{opacity:0,scale:1.02}} transition={{duration:.7,ease:[.22,1,.36,1]}}/></AnimatePresence><div className="experience-image-label">THE SRIKARAM EDIT · 0{experience+1}</div></div></div></section>
+   <section className="corporate"><div className="corporate-image"><img src={photos.final} alt="Premium gift presentation"/></div><div className="corporate-copy" data-reveal><p className="eyebrow light"><span className="eyebrow-line"/> FOR TEAMS, CLIENTS & PARTNERS</p><h2>Make your<br/>appreciation <em>personal.</em></h2><p>Thoughtful gifting can bring people closer, celebrate milestones and make business relationships feel more human. Tell us about your corporate or bulk gifting brief.</p><button className="button button-gold" onClick={openEnquiry}>ENQUIRE ABOUT CORPORATE GIFTING <ArrowUpRight/></button></div></section>
+   <section className="faq section-pad"><div className="faq-heading" data-reveal><p className="eyebrow"><span className="eyebrow-line"/> A FEW THINGS YOU MIGHT WONDER</p><h2>Good to <em>know.</em></h2></div><div className="faq-list">{faqs.map(([q,a],i)=><div className="faq-item" key={q}><button onClick={()=>setFaqOpen(faqOpen===i?null:i)} aria-expanded={faqOpen===i}>{q}<ChevronDown className={faqOpen===i?"faq-chevron active":"faq-chevron"}/></button><AnimatePresence initial={false}>{faqOpen===i&&<motion.p className="faq-answer" initial={{height:0,opacity:0}} animate={{height:"auto",opacity:1}} exit={{height:0,opacity:0}}>{a}</motion.p>}</AnimatePresence></div>)}</div></section>
+   <section className="final-cta"><img src={photos.final} alt="A beautifully presented gift"/><div className="final-shade"/><div className="final-copy" data-reveal><span className="confidential">✳ · A PERSONAL NOTE TO SRIKARAM</span><h2>Make it a moment<br/><em>worth remembering.</em></h2><p>Tell us who you're celebrating. We'll help you find a beautiful way to say it.</p><button className="button button-gold" onClick={openEnquiry}>START A CONVERSATION <ArrowUpRight/></button></div></section>
+  </main>
+  <footer className="footer"><a href="#home" className="wordmark"><span className="wordmark-main">srikaram<span>✳</span></span><span className="wordmark-sub">C R E A T I O N S</span></a><span className="footer-note">THOUGHTFULLY MADE. BEAUTIFULLY GIVEN.</span><div className="footer-links"><a href="#collections">COLLECTIONS</a><a href="#story">OUR STORY</a><a href={SITE} target="_blank" rel="noreferrer">OFFICIAL SITE</a></div><span className="copyright">© {new Date().getFullYear()} SRIKARAM CREATIONS. MADE WITH MEANING.</span></footer>
+  <AnimatePresence>{lightbox!==null&&activeIndex>=0&&<motion.div className="lightbox" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={()=>setLightbox(null)}><button className="lightbox-close" onClick={()=>setLightbox(null)}><X/></button><button className="lightbox-prev" onClick={e=>{e.stopPropagation();move(-1)}}><ChevronLeft/></button><div className="lightbox-content" onClick={e=>e.stopPropagation()}><img src={filtered[activeIndex].image} alt={filtered[activeIndex].title}/><div className="lightbox-caption"><span>{String(activeIndex+1).padStart(2,"0")} / {String(filtered.length).padStart(2,"0")} · {filtered[activeIndex].category.toUpperCase()}</span><h3>{filtered[activeIndex].title}</h3><p>{filtered[activeIndex].description}</p></div></div><button className="lightbox-next" onClick={e=>{e.stopPropagation();move(1)}}><ChevronRight/></button></motion.div>}
+  {enquiryOpen&&<motion.div className="enquiry-backdrop" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={()=>setEnquiryOpen(false)}><motion.div className="enquiry-modal" initial={{y:24,opacity:0}} animate={{y:0,opacity:1}} exit={{y:24,opacity:0}} onClick={e=>e.stopPropagation()}><button className="modal-close" onClick={()=>setEnquiryOpen(false)}><X/></button><p className="eyebrow">A NOTE TO SRIKARAM</p><h2>Let's make<br/><em>it personal.</em></h2><p className="modal-intro">A few details will help you start a conversation with the team.</p><form onSubmit={submit}><label>Your name<input required value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="How should we address you?"/></label><label>Email address<input required type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="you@example.com"/></label><label>What are you planning?<select value={form.occasion} onChange={e=>setForm({...form,occasion:e.target.value})}><option>Personal gifting</option><option>Festive hampers</option><option>Wedding or celebration</option><option>Corporate gifting</option><option>Home décor</option><option>Something else</option></select></label><label>Tell us a little more<textarea rows={3} value={form.message} onChange={e=>setForm({...form,message:e.target.value})} placeholder="Occasion, quantity, date, ideas..."/></label><button className="button button-dark modal-submit" type="submit">COPY ENQUIRY DETAILS <ArrowUpRight/></button></form>{submitted&&<p className="modal-confirm"><Check size={15}/> Details copied if clipboard access is available. Paste them into the official Srikaram contact channel.</p>}<p className="modal-footnote">This form prepares your enquiry; it does not submit an order or contact the business automatically.</p><a className="text-link" href={SITE} target="_blank" rel="noreferrer">OPEN OFFICIAL WEBSITE <ArrowUpRight/></a></motion.div></motion.div>}</AnimatePresence>
+ </div>
 }
-
 export default App;
