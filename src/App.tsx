@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronDown, ChevronLeft, ChevronRight, Menu, Volume2, VolumeX, X } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronDown, ChevronLeft, ChevronRight, Menu, X } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
@@ -52,7 +52,7 @@ const scenes = [
 ];
 
 function App() {
- const [menuOpen,setMenuOpen]=useState(false),[activeFilter,setActiveFilter]=useState("All"),[lightbox,setLightbox]=useState<number|null>(null),[experience,setExperience]=useState(0),[faqOpen,setFaqOpen]=useState<number|null>(0),[enquiryOpen,setEnquiryOpen]=useState(false),[submitted,setSubmitted]=useState(false),[muted,setMuted]=useState(true),[progress,setProgress]=useState(0);
+ const [menuOpen,setMenuOpen]=useState(false),[activeFilter,setActiveFilter]=useState("All"),[lightbox,setLightbox]=useState<number|null>(null),[experience,setExperience]=useState(0),[faqOpen,setFaqOpen]=useState<number|null>(0),[enquiryOpen,setEnquiryOpen]=useState(false),[submitted,setSubmitted]=useState(false),[progress,setProgress]=useState(0);
  const [form,setForm]=useState({name:"",email:"",occasion:"Personal gifting",message:""});
  const reduceMotion=useReducedMotion(); const mainRef=useRef<HTMLElement>(null); const heroTrack=useRef<HTMLElement>(null);
  const filtered=useMemo(()=>activeFilter==="All"?gallery:gallery.filter(x=>x.category===activeFilter),[activeFilter]);
@@ -86,7 +86,7 @@ function App() {
    <section className="cinema-hero" id="home" ref={heroTrack}>
     <div className="cinema-sticky"><img className="cinema-bg" src={photos.hero} alt="Curated gift presentation"/><div className="cinema-scrim"/><div className="cinema-hud"><span>THE SRIKARAM EDIT · INDIA</span><span className="hud-right">SCENE 0{Math.min(4,Math.floor(progress*4)+1)} / 04 <i/></span></div>
      {scenes.map((s,i)=>{const start=i/4,end=(i+1)/4;const active=progress>=start&&(progress<end||i===3);return <div className={active?"hero-scene scene-active":"hero-scene"} key={s.eyebrow} style={{opacity:active?1:0,transform:active?"translateY(0)":"translateY(26px)"}}><p className="eyebrow light"><span className="eyebrow-line"/> {s.eyebrow}</p><h1>{s.a}<br/><em>{s.b}</em></h1><p className="hero-description">{s.copy}</p>{i===0||i===3?<div className="hero-actions"><a className="button button-gold" href="#collections">EXPLORE THE COLLECTIONS <ArrowUpRight size={16}/></a><button className="button button-glass" onClick={openEnquiry}>MAKE AN ENQUIRY <ArrowUpRight size={16}/></button></div>:null}</div>})}
-     <button className="sound-toggle" onClick={()=>setMuted(!muted)} aria-label={muted?"Sound is muted":"Sound is on"}>{muted?<VolumeX size={17}/>:<Volume2 size={17}/>}</button><a className="hero-scroll" href="#intro"><span>SCROLL TO EXPLORE</span><ArrowDown size={15}/></a><div className="hero-progress"><span style={{transform:`scaleX(${progress})`}}/></div>
+     <a className="hero-scroll" href="#intro"><span>SCROLL TO EXPLORE</span><ArrowDown size={15}/></a><div className="hero-progress"><span style={{transform:`scaleX(${progress})`}}/></div>
     </div>
    </section>
    <section className="chapter intro section-pad" id="intro"><div className="chapter-top"><p className="eyebrow"><span className="eyebrow-line"/> 01 · THE ART OF GIFTING</p><span className="folio">SRIKARAM CREATIONS / 01</span></div><h2 data-reveal>More than a gift.<br/><em>A feeling, thoughtfully given.</em></h2><div className="intro-layout"><div className="intro-photo" data-image-reveal><img data-parallax src={photos.intro} alt="A personal gift beautifully presented"/><span className="photo-tag">PLATE 01 — A PERSONAL TOUCH</span><span className="photo-note">MADE TO FEEL LIKE THEM</span></div><div className="intro-aside" data-reveal><p className="eyebrow"><span className="eyebrow-line"/> THE THOUGHT BEHIND IT</p><h3>“I thought of you.”<br/><em>And it shows.</em></h3><p>We believe gifting is more than the exchange of something beautiful. It is a moment of connection — a way to celebrate, appreciate, remember and make someone feel seen.</p><p>Every choice, detail and finishing touch can turn a simple gesture into something that stays with someone.</p><a className="text-link" href="#collections">DISCOVER THE COLLECTIONS <ArrowUpRight size={15}/></a></div></div></section>
