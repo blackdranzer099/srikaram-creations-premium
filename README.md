@@ -1,26 +1,36 @@
-# Srikaram Creations — Premium Website
+# Srikaram Creations — Editorial Gifting Experience
 
-A premium, editorial-style website concept for Srikaram Creations, built with React, TypeScript, Vite, Tailwind CSS, Framer Motion and Lucide.
+A responsive, cinematic brand website for Srikaram Creations. The visual direction adapts the supplied VALLE SILENS prompt into a premium gifting experience: warm limestone and ivory surfaces, forest-green moments, aged-champagne accents, editorial serif typography, asymmetrical photography and restrained motion.
 
-## Design direction
+## Experience
 
-- Warm ivory, forest green and champagne accents
-- Editorial serif typography paired with clean sans-serif UI
-- Large product photography and generous whitespace
-- Responsive mobile-first layouts
-- Subtle entrance, hover and accordion motion
-- Reduced-motion support
+- Editorial hero and brand philosophy
+- Personalised gifts, festive hampers, home décor and corporate gifting collections
+- Asymmetric visual archive with category filters and keyboard-accessible lightbox navigation
+- GSAP + ScrollTrigger image reveals and subtle parallax
+- Lenis smooth scrolling, disabled when the visitor requests reduced motion
+- Responsive mobile navigation and accordion FAQs
+- Enquiry form that copies the visitor's brief and opens the official Srikaram website; it does not pretend to submit to a backend
 
-## Getting started
+## Stack
 
-Requirements: Node.js 20+
+- React 19 + TypeScript + Vite
+- Tailwind CSS 3 utilities available alongside the custom design system
+- GSAP + ScrollTrigger
+- Lenis
+- Framer Motion
+- Lucide React
+
+## Run locally
+
+Requires Node.js 20+.
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
-## Production build
+## Verify a production build
 
 ```bash
 npm run typecheck
@@ -30,24 +40,22 @@ npm run preview
 
 ## Deployment
 
-Connect this repository to Vercel or Cloudflare Pages. For Vercel, use the Vite preset, build command `npm run build`, and output directory `dist`.
+Import this repository into Vercel or Cloudflare Pages.
 
-## Before launch
+- Framework: Vite
+- Build command: `npm run build`
+- Output directory: `dist`
+- Install command: `npm ci`
 
-- Replace temporary stock imagery with approved Srikaram product photography.
-- Confirm the official brand story, collection names, address and contact details.
-- Add the correct WhatsApp, email and Instagram destinations.
-- Confirm product availability, enquiry handling and privacy requirements.
-- Test all layouts and interactions on real mobile devices.
+## Launch checklist
 
-## Project structure
+- Replace Unsplash concept photography with Srikaram-owned or licensed product and lifestyle photography.
+- Confirm official brand story, exact product categories, product availability and fulfilment claims.
+- Add verified WhatsApp, email and Instagram URLs.
+- Connect the enquiry form to an approved inbox, CRM, WhatsApp number or backend endpoint before treating it as a lead-capture form.
+- Confirm privacy policy, terms and any shipping/returns information with the business.
+- Test image loading, accessibility, performance and mobile behavior on real devices.
 
-```
-src/
-  App.tsx       Main page sections and interactions
-  index.css     Design system and responsive styles
-  main.tsx      React entry point
-index.html      Metadata and font loading
-```
+## Note on content
 
-All imagery currently uses remote Unsplash image URLs as temporary visual placeholders. Replace them with owned or licensed brand assets before production launch.
+The current copy is editorial draft copy. The repository's existing public site is linked for the official enquiry handoff. No unverified phone number, email address, pricing, shipping promise or customer testimonial is fabricated.
