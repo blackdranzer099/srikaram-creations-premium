@@ -85,5 +85,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
  .gallery-label{font-size:6px;letter-spacing:.14em}
 }
 @media(prefers-reduced-motion:reduce){
- .hero-scene{opacity:1!important;visibility:visible!important;transform:none!important}
+ .hero-scene{opacity:0!important;visibility:hidden!important;transform:none!important}
+ .hero-scene.scene-active{opacity:1!important;visibility:visible!important}
 }

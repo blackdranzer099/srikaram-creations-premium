@@ -113,3 +113,12 @@ test("mobile visual archive uses a single-column editorial layout", async ({ pag
   await page.locator("#gallery").scrollIntoViewIfNeeded();
   await expect(page.locator(".gallery-glass").first()).toBeVisible();
 });
+
+test("reduced-motion mode keeps the hero readable without scroll animation", async ({ browser }) => {
+  const context = await browser.newContext({ reducedMotion: "reduce" });
+  const page = await context.newPage();
+  await page.goto("/");
+  await expect(page.locator(".hero-scene.scene-active")).toHaveCount(1);
+  await expect(page.locator(".hero-scene.scene-active")).toBeVisible();
+  await context.close();
+});
