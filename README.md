@@ -49,7 +49,7 @@ Import this repository into Vercel or Cloudflare Pages.
 
 ## Launch checklist
 
-- Replace Unsplash concept photography with Srikaram-owned or licensed product and lifestyle photography.
+- Confirm that all locally hosted original brand photography is approved for reuse and add further product imagery only from the brand owner or licensed sources.
 - Confirm official brand story, exact product categories, product availability and fulfilment claims.
 - Add verified WhatsApp, email and Instagram URLs.
 - Connect the enquiry form to an approved inbox, CRM, WhatsApp number or backend endpoint before treating it as a lead-capture form.
