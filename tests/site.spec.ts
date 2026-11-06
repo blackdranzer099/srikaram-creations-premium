@@ -97,3 +97,19 @@ test("brand photography is served from local optimized assets", async ({ page })
   await expect.poll(async () => localImages.evaluateAll(images => images.filter(image => image.complete && image.naturalWidth > 0).length)).toBeGreaterThan(0);
   expect(failedImages, "local brand images should load without network failures").toEqual([]);
 });
+
+test("cinematic hero presents one active scene and uses the four-scene story track", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".hero-scene")).toHaveCount(4);
+  await expect(page.locator(".hero-scene.scene-active")).toHaveCount(1);
+  await expect(page.locator(".cinema-hero")).toHaveCSS("height", /\d+px/);
+});
+
+test("mobile visual archive uses a single-column editorial layout", async ({ page, isMobile }) => {
+  test.skip(!isMobile, "mobile-only gallery layout test");
+  await page.goto("/");
+  const columns = await page.locator(".gallery-grid").evaluate(el => getComputedStyle(el).gridTemplateColumns);
+  expect(columns.trim().split(/\s+/)).toHaveLength(1);
+  await page.locator("#gallery").scrollIntoViewIfNeeded();
+  await expect(page.locator(".gallery-glass").first()).toBeVisible();
+});

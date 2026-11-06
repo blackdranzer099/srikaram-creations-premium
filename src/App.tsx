@@ -68,6 +68,14 @@ function App() {
    gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach(el=>gsap.fromTo(el,{y:34,opacity:0},{y:0,opacity:1,duration:.95,ease:"power3.out",scrollTrigger:{trigger:el,start:"top 86%",once:true}}));
    gsap.utils.toArray<HTMLElement>("[data-image-reveal]").forEach(el=>gsap.fromTo(el,{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0% 0 0)",duration:1.35,ease:"power3.inOut",scrollTrigger:{trigger:el,start:"top 84%",once:true}}));
    gsap.utils.toArray<HTMLElement>("[data-parallax]").forEach(el=>gsap.fromTo(el,{yPercent:-3},{yPercent:3,ease:"none",scrollTrigger:{trigger:el,start:"top bottom",end:"bottom top",scrub:.8}}));
+   const heroScenes=gsap.utils.toArray<HTMLElement>(".hero-scene");
+   if(heroTrack.current&&heroScenes.length){
+    const story=gsap.timeline({scrollTrigger:{trigger:heroTrack.current,start:"top top",end:"bottom bottom",scrub:.6}});
+    heroScenes.forEach((scene,index)=>{
+     story.fromTo(scene,{autoAlpha:index===0?1:0,y:index===0?0:32},{autoAlpha:1,y:0,duration:.18,ease:"power2.out"},index);
+     if(index<heroScenes.length-1)story.to(scene,{autoAlpha:0,y:-30,duration:.18,ease:"power2.in"},index+.82);
+    });
+   }
   },mainRef);
   return()=>{ctx.revert();gsap.ticker.remove(tick);lenis.destroy()};
  },[reduceMotion]);
@@ -86,11 +94,11 @@ function App() {
  useEffect(()=>{const key=(e:KeyboardEvent)=>{if(e.key==="Escape"){setLightbox(null);setEnquiryOpen(false)}if(lightbox!==null&&e.key==="ArrowRight")move(1);if(lightbox!==null&&e.key==="ArrowLeft")move(-1)};window.addEventListener("keydown",key);return()=>window.removeEventListener("keydown",key)},[lightbox,activeIndex,filtered]);
  return <div className="site-shell">
   <div className="announcement"><span>THOUGHTFUL GESTURES. BEAUTIFULLY MADE.</span><span className="announcement-right">A LITTLE MORE MEANING IN EVERY MOMENT <b>✳</b></span></div>
-  <header className="header"><a href="#home" className="wordmark" onClick={()=>setMenuOpen(false)}><span className="wordmark-main">srikaram<span>✳</span></span><span className="wordmark-sub">C R E A T I O N S</span></a><nav className={menuOpen?"nav nav-open":"nav"}><a href="#collections" onClick={()=>setMenuOpen(false)}>Collections</a><a href="#story" onClick={()=>setMenuOpen(false)}>Our story</a><a href="#gallery" onClick={()=>setMenuOpen(false)}>Visual archive</a><a href="#experience" onClick={()=>setMenuOpen(false)}>Experiences</a></nav><button className="header-cta" onClick={openEnquiry}>MAKE AN ENQUIRY <ArrowUpRight size={15}/></button><button className="menu-toggle" onClick={()=>setMenuOpen(!menuOpen)} aria-label="Toggle menu">{menuOpen?<X/>:<Menu/>}</button></header>
+  <header className="header"><a href="#home" className="wordmark" onClick={()=>setMenuOpen(false)}><span className="wordmark-main">srikaram<span>✳</span></span><span className="wordmark-sub">C R E A T I O N S</span></a><nav className={menuOpen?"nav nav-open":"nav"}><a href="#collections" onClick={()=>setMenuOpen(false)}>Collections</a><a href="#story" onClick={()=>setMenuOpen(false)}>Our story</a><a href="#gallery" onClick={()=>setMenuOpen(false)}>Visual archive</a><a href="#experience" onClick={()=>setMenuOpen(false)}>Experiences</a></nav><button className="header-cta" onClick={openEnquiry}>MAKE AN ENQUIRY <ArrowUpRight size={15}/></button><button className="menu-toggle" onClick={()=>setMenuOpen(!menuOpen)} aria-label="Toggle menu" aria-expanded={menuOpen}>{menuOpen?<X/>:<Menu/>}</button></header>
   <main ref={mainRef}>
    <section className="cinema-hero" id="home" ref={heroTrack}>
     <div className="cinema-sticky"><video className="cinema-bg" autoPlay muted loop playsInline preload="auto" poster={photos.hero} aria-label="Srikaram Creations cinematic background"><source src="https://preview.wbm.im/pw/medium/6c0190d3922b285967ce00953c487197.mp4" type="video/mp4"/></video><div className="cinema-scrim"/><div className="cinema-hud"><span>THE SRIKARAM EDIT · INDIA</span><span className="hud-right">SCENE 0{Math.min(4,Math.floor(progress*4)+1)} / 04 <i/></span></div>
-     {scenes.map((s,i)=>{const start=i/4,end=(i+1)/4;const active=progress>=start&&(progress<end||i===3);return <div className={active?"hero-scene scene-active":"hero-scene"} key={s.eyebrow} style={{opacity:active?1:0,transform:active?"translateY(0)":"translateY(26px)"}}><p className="eyebrow light"><span className="eyebrow-line"/> {s.eyebrow}</p><h1>{s.a}<br/><em>{s.b}</em></h1><p className="hero-description">{s.copy}</p>{i===0||i===3?<div className="hero-actions"><a className="button button-gold" href="#collections">EXPLORE THE COLLECTIONS <ArrowUpRight size={16}/></a><button className="button button-glass" onClick={openEnquiry}>MAKE AN ENQUIRY <ArrowUpRight size={16}/></button></div>:null}</div>})}
+     {scenes.map((s,i)=>{const start=i/4,end=(i+1)/4;const active=progress>=start&&(progress<end||i===3);return <div className={active?"hero-scene scene-active":"hero-scene"} data-hero-scene key={s.eyebrow}><p className="eyebrow light"><span className="eyebrow-line"/> {s.eyebrow}</p><h1>{s.a}<br/><em>{s.b}</em></h1><p className="hero-description">{s.copy}</p>{i===0||i===3?<div className="hero-actions"><a className="button button-gold" href="#collections">EXPLORE THE COLLECTIONS <ArrowUpRight size={16}/></a><button className="button button-glass" onClick={openEnquiry}>MAKE AN ENQUIRY <ArrowUpRight size={16}/></button></div>:null}</div>})}
      <a className="hero-scroll" href="#intro"><span>SCROLL TO EXPLORE</span><ArrowDown size={15}/></a><div className="hero-progress"><span style={{transform:`scaleX(${progress})`}}/></div>
     </div>
    </section>
