@@ -44,15 +44,8 @@ const faqs = [
  ["Can I enquire about a custom or bulk order?","Yes. Include your occasion, quantity, preferred date and ideas in your enquiry."],
  ["Where can I see current products and availability?","For current collections and availability, please contact Srikaram Creations through its official website."],["Do you personalise gifts for special occasions?","Share the occasion and personal touches you have in mind through the enquiry form. The team can discuss suitable options."],["Can I enquire about corporate gifting?","Yes. Choose Corporate gifting in the enquiry form and include your quantity, preferred date and brief."],["How do I contact Srikaram Creations?","Use the enquiry form to prepare an email to enquiry@srikaramcreations.com. Review the draft and send it from your email app."]
 ];
-const scenes = [
- {eyebrow:"THE ART OF THOUGHTFUL GIFTING",a:"Give a little",b:"more meaning.",copy:"For the moments that matter, the people who make them special, and the memories worth keeping."},
- {eyebrow:"PERSONALITY IN EVERY DETAIL",a:"A gift should",b:"feel like them.",copy:"Personal touches, thoughtful choices and considered presentation make a gesture feel truly individual."},
- {eyebrow:"THE BEAUTY OF PRESENTATION",a:"Make the moment",b:"beautiful.",copy:"From the first impression to the final ribbon, every detail has a part to play."},
- {eyebrow:"THE SRIKARAM WAY",a:"Thoughtfully made.",b:"Given with love.",copy:"Handcrafted gifts, personalized hampers, elegant home décor and corporate gifting—made to celebrate life’s special moments."}
-];
-
 function App() {
- const [menuOpen,setMenuOpen]=useState(false),[activeSection,setActiveSection]=useState("collections"),[activeFilter,setActiveFilter]=useState("All"),[lightbox,setLightbox]=useState<number|null>(null),[experience,setExperience]=useState(0),[faqOpen,setFaqOpen]=useState<number|null>(0),[enquiryOpen,setEnquiryOpen]=useState(false),[submitted,setSubmitted]=useState(false),[copyError,setCopyError]=useState(false),[progress,setProgress]=useState(0);
+ const [menuOpen,setMenuOpen]=useState(false),[activeSection,setActiveSection]=useState("collections"),[activeFilter,setActiveFilter]=useState("All"),[lightbox,setLightbox]=useState<number|null>(null),[experience,setExperience]=useState(0),[faqOpen,setFaqOpen]=useState<number|null>(0),[enquiryOpen,setEnquiryOpen]=useState(false),[submitted,setSubmitted]=useState(false),[copyError,setCopyError]=useState(false);
  const [form,setForm]=useState({name:"",email:"",occasion:"Personal gifting",message:""});
  const reduceMotion=useReducedMotion(); const mainRef=useRef<HTMLElement>(null); const heroTrack=useRef<HTMLElement>(null);
  const filtered=useMemo(()=>activeFilter==="All"?gallery:gallery.filter(x=>x.category===activeFilter),[activeFilter]);
@@ -79,12 +72,7 @@ function App() {
   },mainRef);
   return()=>{ctx.revert();gsap.ticker.remove(tick);lenis.destroy()};
  },[reduceMotion]);
- useEffect(()=>{
-  const track=heroTrack.current;if(!track)return;
-  const update=()=>{const rect=track.getBoundingClientRect();const total=track.offsetHeight-window.innerHeight;const done=Math.min(1,Math.max(0,-rect.top/Math.max(1,total)));setProgress(done)};
-  update();window.addEventListener("scroll",update,{passive:true});window.addEventListener("resize",update);
-  return()=>{window.removeEventListener("scroll",update);window.removeEventListener("resize",update)};
- },[]);
+
  useEffect(()=>{
   const sectionIds=["collections","story","gallery","experience"];
   const sections=sectionIds.map(id=>document.getElementById(id)).filter((node):node is HTMLElement=>node!==null);
