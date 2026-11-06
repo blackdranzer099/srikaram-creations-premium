@@ -23,3 +23,4 @@
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
 .modal-error{font-size:10px;line-height:1.6;color:#9b3f35;background:rgba(155,63,53,.08);border:1px solid rgba(155,63,53,.2);border-radius:8px;padding:12px;margin:12px 0 0}
+\n/* Graceful image fallback: avoid Safari broken-image glyphs for unavailable remote assets. */\nimg.image-load-failed{visibility:hidden!important}\n.has-image-fallback{background:linear-gradient(135deg,#d8cbb5 0%,#b8a58a 48%,#8e806d 100%);position:relative}\n.has-image-fallback::after{content:"SRIKARAM CREATIONS";position:absolute;inset:auto 14px 14px auto;color:rgba(255,255,255,.78);font-size:8px;letter-spacing:.18em;pointer-events:none}\n.cinema-sticky{background:radial-gradient(ellipse at 68% 42%,#66533a 0%,#29251f 48%,#111210 100%)}\n
