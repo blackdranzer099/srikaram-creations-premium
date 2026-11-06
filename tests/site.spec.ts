@@ -1,156 +1,86 @@
 import { test, expect } from "@playwright/test";
 
-test("home page loads with the expected brand and main sections", async ({ page }) => {
-  const pageErrors: string[] = [];
-  page.on("pageerror", error => pageErrors.push(error.message));
+test("editorial homepage loads with brand, collections and no horizontal overflow", async ({ page }) => {
+  const errors:string[]=[];
+  page.on("pageerror",e=>errors.push(e.message));
   await page.goto("/");
   await expect(page).toHaveTitle(/Srikaram Creations/i);
-  await expect(page.locator("#home")).toBeVisible();
-  for (const id of ["intro", "story", "collections", "gallery", "experience"]) {
-    await expect(page.locator(`#${id}`)).toHaveCount(1);
-  }
-  const dimensions = await page.evaluate(() => ({
-    viewport: document.documentElement.clientWidth,
-    document: document.documentElement.scrollWidth,
-  }));
-  expect(dimensions.document, "page should not overflow horizontally").toBeLessThanOrEqual(dimensions.viewport + 1);
-  expect(pageErrors).toEqual([]);
+  await expect(page.getByRole("heading",{name:/Some feelings deserve to be wrapped/i})).toBeVisible();
+  for(const id of ["collections","occasions","story","corporate"]) await expect(page.locator("#"+id)).toHaveCount(1);
+  const sizes=await page.evaluate(()=>({width:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth}));
+  expect(sizes.scroll).toBeLessThanOrEqual(sizes.width+1);
+  expect(errors).toEqual([]);
 });
 
-test("gallery category filters and lightbox work", async ({ page }) => {
-  await page.goto("/");
-  await page.locator("#gallery").scrollIntoViewIfNeeded();
-  await expect(page.locator(".gallery-card")).toHaveCount(8);
-  await page.getByRole("button", { name: "Festive Hampers", exact: true }).click();
-  await expect(page.locator(".gallery-card")).toHaveCount(2);
-  await page.getByRole("button", { name: "All", exact: true }).click();
-  await expect(page.locator(".gallery-card")).toHaveCount(8);
-  await page.locator(".gallery-card").first().click();
-  await expect(page.locator(".lightbox")).toBeVisible();
-  await page.getByRole("button", { name: "Close gallery image" }).click();
-  await expect(page.locator(".lightbox")).toHaveCount(0);
+test("collection filters and search update the catalogue",async({page})=>{
+ await page.goto("/");
+ await expect(page.locator(".collection-card")).toHaveCount(4);
+ await page.getByRole("button",{name:"Hampers",exact:true}).click();
+ await expect(page.locator(".collection-card")).toHaveCount(1);
+ await expect(page.locator(".collection-card")).toContainText("Festive hampers");
+ await page.getByRole("button",{name:"All",exact:true}).click();
+ await page.getByRole("textbox",{name:"Search collections"}).fill("corporate");
+ await expect(page.locator(".collection-card")).toHaveCount(1);
+ await expect(page.locator(".collection-card")).toContainText("Corporate gifting");
 });
 
-test("experience carousel and FAQ accordion respond to interaction", async ({ page }) => {
-  await page.goto("/");
-  await page.locator("#experience").scrollIntoViewIfNeeded();
-  await expect(page.locator(".experience-number")).toContainText("EXPERIENCE 01");
-  await page.getByRole("button", { name: "Next experience" }).click();
-  await expect(page.locator(".experience-number")).toContainText("EXPERIENCE 02");
-  const firstFaq = page.getByRole("button", { name: /Can I personalise a gift/ });
-  await firstFaq.click();
-  await expect(firstFaq).toHaveAttribute("aria-expanded", "false");
-  await firstFaq.click();
-  await expect(firstFaq).toHaveAttribute("aria-expanded", "true");
+test("collection details open and enquiry can be started from a collection",async({page})=>{
+ await page.goto("/");
+ await page.getByRole("button",{name:"View Personalised keepsakes"}).click();
+ await expect(page.getByRole("dialog",{name:/Personalised keepsakes/i})).toBeVisible();
+ await page.getByRole("button",{name:/ENQUIRE ABOUT THIS COLLECTION/i}).click();
+ const dialog=page.getByRole("dialog",{name:/Tell us what/i});
+ await expect(dialog).toBeVisible();
+ await expect(dialog.getByLabel("What are you looking for?")).toHaveValue("Personalised keepsakes");
+ await dialog.getByRole("button",{name:"Close enquiry form"}).click();
 });
 
-test("enquiry dialog validates fields and prepares an email draft", async ({ page }) => {
-  await page.goto("/");
-  await page.locator(".header-cta").click();
-  const dialog = page.locator(".enquiry-modal");
-  await expect(dialog).toBeVisible();
-  await dialog.getByLabel("Your name").fill("QA Test");
-  await dialog.getByLabel("Email address").fill("qa@example.com");
-  await dialog.getByLabel("Tell us a little more").fill("Automated browser test only");
-  await expect(dialog.getByRole("button", { name: /OPEN EMAIL DRAFT/i })).toBeEnabled();
-  await expect(dialog.getByLabel("Your name")).toHaveValue("QA Test");
-  await expect(dialog.getByLabel("Email address")).toHaveValue("qa@example.com");
-  await dialog.getByRole("button", { name: "Close enquiry form" }).click();
-  await expect(dialog).toHaveCount(0);
+test("enquiry form captures mixed-pricing brief and validates required details",async({page})=>{
+ await page.goto("/");
+ await page.locator(".nav-cta").click();
+ const dialog=page.locator(".enquiry-modal");
+ await expect(dialog).toBeVisible();
+ await dialog.getByLabel("Your name").fill("QA Test");
+ await dialog.getByLabel("Email address").fill("qa@example.com");
+ await dialog.getByLabel("Budget").selectOption("₹1,000 – ₹2,500");
+ await dialog.getByLabel("Quantity").fill("12");
+ await dialog.getByLabel("Tell us a little more").fill("A small celebration gift");
+ await expect(dialog.getByRole("button",{name:/PREPARE MY ENQUIRY/i})).toBeEnabled();
+ await expect(dialog.getByLabel("Budget")).toHaveValue("₹1,000 – ₹2,500");
+ await dialog.getByRole("button",{name:"Close enquiry form"}).click();
 });
 
-test("mobile navigation opens and closes", async ({ page, isMobile }) => {
-  test.skip(!isMobile, "mobile-only navigation test");
-  await page.goto("/");
-  await expect(page.getByRole("button", { name: "Toggle menu" })).toBeVisible();
-  await page.getByRole("button", { name: "Toggle menu" }).click();
-  await expect(page.locator(".nav")).toHaveClass(/nav-open/);
-  await page.locator(".nav").getByRole("link", { name: "Collections" }).click();
-  await expect(page.locator(".nav")).not.toHaveClass(/nav-open/);
-  await expect(page).toHaveURL(/#collections$/);
+test("mobile navigation opens, closes and links to occasions",async({page,isMobile})=>{
+ test.skip(!isMobile,"mobile-only");
+ await page.goto("/");
+ await page.getByRole("button",{name:"Toggle navigation"}).click();
+ await expect(page.locator(".main-nav")).toHaveClass(/nav-open/);
+ await page.locator(".main-nav").getByRole("link",{name:"Shop by occasion"}).click();
+ await expect(page).toHaveURL(/#occasions$/);
+ await expect(page.locator(".main-nav")).not.toHaveClass(/nav-open/);
 });
 
-test("mobile layout has no horizontal overflow and enquiry is usable", async ({ page, isMobile }) => {
-  test.skip(!isMobile, "mobile-only layout test");
-  await page.goto("/");
-  const dimensions = await page.evaluate(() => ({
-    viewport: document.documentElement.clientWidth,
-    document: document.documentElement.scrollWidth,
-  }));
-  expect(dimensions.document, "mobile page should not overflow horizontally").toBeLessThanOrEqual(dimensions.viewport + 1);
-  await page.locator(".header-cta").click();
-  const dialog = page.locator(".enquiry-modal");
-  await expect(dialog).toBeVisible();
-  await expect(dialog.getByLabel("Your name")).toBeVisible();
-  await expect(dialog.getByLabel("Email address")).toBeVisible();
+test("mobile layout fits viewport and enquiry is usable",async({page,isMobile})=>{
+ test.skip(!isMobile,"mobile-only");
+ await page.goto("/");
+ const sizes=await page.evaluate(()=>({width:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth}));
+ expect(sizes.scroll).toBeLessThanOrEqual(sizes.width+1);
+ await page.locator(".nav-cta").click();
+ await expect(page.locator(".enquiry-modal")).toBeVisible();
+ await expect(page.getByLabel("Budget")).toBeVisible();
 });
 
-test("brand photography is served from local optimized assets", async ({ page }) => {
-  const failedImages: string[] = [];
-  page.on("requestfailed", request => {
-    if (request.url().includes("/images/official-site-image-")) failedImages.push(request.url());
-  });
-  await page.goto("/");
-  await page.locator("#collections").scrollIntoViewIfNeeded();
-  const localImages = page.locator('img[src^="/images/official-site-image-"]');
-  await expect(localImages.first()).toBeAttached();
-  await expect.poll(async () => localImages.evaluateAll(images => images.filter(image => image.complete && image.naturalWidth > 0).length)).toBeGreaterThan(0);
-  expect(failedImages, "local brand images should load without network failures").toEqual([]);
+test("failed hosted product photos use a branded fallback rather than broken image UI",async({page})=>{
+ await page.goto("/");
+ await page.locator(".hero-visual img").evaluate((img:HTMLImageElement)=>{img.dispatchEvent(new Event("error"));});
+ await expect(page.locator(".hero-visual")).toHaveClass(/image-fallback/);
+ await expect(page.locator(".hero-visual img")).toHaveCSS("display","none");
 });
 
-test("cinematic hero presents one active scene and uses the four-scene story track", async ({ page }) => {
-  await page.goto("/");
-  await expect(page.locator(".hero-scene")).toHaveCount(4);
-  await expect(page.locator(".hero-scene.scene-active")).toHaveCount(1);
-  await expect(page.locator(".cinema-hero")).toHaveCSS("height", /\d+px/);
-});
-
-test("mobile visual archive uses a single-column editorial layout", async ({ page, isMobile }) => {
-  test.skip(!isMobile, "mobile-only gallery layout test");
-  await page.goto("/");
-  const columns = await page.locator(".gallery-grid").evaluate(el => getComputedStyle(el).gridTemplateColumns);
-  expect(columns.trim().split(/\s+/)).toHaveLength(1);
-  await page.locator("#gallery").scrollIntoViewIfNeeded();
-  await expect(page.locator(".gallery-glass").first()).toBeVisible();
-});
-
-test("reduced-motion mode keeps the hero readable without scroll animation", async ({ browser }) => {
-  const context = await browser.newContext({ reducedMotion: "reduce" });
-  const page = await context.newPage();
-  await page.goto("/");
-  await expect(page.locator(".hero-scene.scene-active")).toHaveCount(1);
-  await expect(page.locator(".hero-scene.scene-active")).toBeVisible();
-  await context.close();
-});
-
-test("below-the-fold photography is deferred and images decode asynchronously", async ({ page }) => {
-  await page.goto("/");
-  const belowFold = page.locator(".intro-photo img, .story-photo img, .atmosphere > img, .corporate-image img, .final-cta > img");
-  await expect(belowFold).toHaveCount(5);
-  const attributes = await belowFold.evaluateAll(images => images.map(image => ({
-    loading: image.getAttribute("loading"),
-    decoding: image.getAttribute("decoding"),
-  })));
-  expect(attributes.every(item => item.loading === "lazy" && item.decoding === "async")).toBeTruthy();
-  await expect(page.locator(".cinema-bg")).toHaveAttribute("preload", "metadata");
-});
-
-
-test("all brand photographs render fully across the page", async ({ page }) => {
-  const failed: string[] = [];
-  page.on("requestfailed", request => { if (request.url().includes("/images/official-site-image-")) failed.push(request.url()); });
-  await page.goto("/");
-  for (const section of ["#intro", "#story", "#collections", "#gallery", "#experience"]) {
-    await page.locator(section).scrollIntoViewIfNeeded();
-    await page.waitForTimeout(250);
-  }
-  const imageState = await page.locator('img[src^="/images/official-site-image-"]').evaluateAll(images => images.map(image => ({
-    src: image.getAttribute("src"), complete: (image as HTMLImageElement).complete,
-    width: (image as HTMLImageElement).naturalWidth, height: (image as HTMLImageElement).naturalHeight,
-    visibility: getComputedStyle(image).visibility, opacity: getComputedStyle(image).opacity,
-    clipPath: getComputedStyle(image).clipPath,
-  })));
-  expect(failed, "brand image requests should succeed").toEqual([]);
-  expect(imageState.filter(image => image.complete && image.width > 0 && image.height > 0).length).toBeGreaterThan(0);
-  expect(imageState.every(image => image.visibility !== "hidden" && image.opacity !== "0" && image.clipPath === "none")).toBeTruthy();
+test("FAQ accordion exposes expanded state",async({page})=>{
+ await page.goto("/");
+ const first=page.getByRole("button",{name:/Can I customise a gift/i});
+ await expect(first).toHaveAttribute("aria-expanded","true");
+ await first.click();
+ await expect(first).toHaveAttribute("aria-expanded","false");
 });
