@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://srikaram-creations-premium.vercel.app/sitemap.xml
