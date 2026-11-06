@@ -88,3 +88,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
  .hero-scene{opacity:0!important;visibility:hidden!important;transform:none!important}
  .hero-scene.scene-active{opacity:1!important;visibility:visible!important}
 }
+
+/* Image rendering reliability: photographs must never depend on an animation to become visible. */
+[data-image-reveal]{clip-path:none!important;overflow:hidden}
+[data-image-reveal] img,[data-parallax]{clip-path:none!important;opacity:1!important;visibility:visible!important;transform:none!important;will-change:auto!important}
+.intro-photo img,.story-photo img{inset:0;height:100%;width:100%;object-fit:cover}
+.atmosphere>img{inset:0;height:100%;width:100%;object-fit:cover}
+.collection-image img,.gallery-image>img,.experience-image img,.corporate-image img,.final-cta>img{display:block;opacity:1;visibility:visible;clip-path:none;transform:none}

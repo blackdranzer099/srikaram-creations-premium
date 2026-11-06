@@ -134,3 +134,23 @@ test("below-the-fold photography is deferred and images decode asynchronously", 
   expect(attributes.every(item => item.loading === "lazy" && item.decoding === "async")).toBeTruthy();
   await expect(page.locator(".cinema-bg")).toHaveAttribute("preload", "metadata");
 });
+
+
+test("all brand photographs render fully across the page", async ({ page }) => {
+  const failed: string[] = [];
+  page.on("requestfailed", request => { if (request.url().includes("/images/official-site-image-")) failed.push(request.url()); });
+  await page.goto("/");
+  for (const section of ["#intro", "#story", "#collections", "#gallery", "#experience"]) {
+    await page.locator(section).scrollIntoViewIfNeeded();
+    await page.waitForTimeout(250);
+  }
+  const imageState = await page.locator('img[src^="/images/official-site-image-"]').evaluateAll(images => images.map(image => ({
+    src: image.getAttribute("src"), complete: (image as HTMLImageElement).complete,
+    width: (image as HTMLImageElement).naturalWidth, height: (image as HTMLImageElement).naturalHeight,
+    visibility: getComputedStyle(image).visibility, opacity: getComputedStyle(image).opacity,
+    clipPath: getComputedStyle(image).clipPath,
+  })));
+  expect(failed, "brand image requests should succeed").toEqual([]);
+  expect(imageState.filter(image => image.complete && image.width > 0 && image.height > 0).length).toBeGreaterThan(0);
+  expect(imageState.every(image => image.visibility !== "hidden" && image.opacity !== "0" && image.clipPath === "none")).toBeTruthy();
+});

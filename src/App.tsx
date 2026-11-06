@@ -66,8 +66,8 @@ function App() {
   lenis.on("scroll",ScrollTrigger.update);const tick=(t:number)=>lenis.raf(t*1000);gsap.ticker.add(tick);gsap.ticker.lagSmoothing(0);
   const ctx=gsap.context(()=>{
    gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach(el=>gsap.fromTo(el,{y:34,opacity:0},{y:0,opacity:1,duration:.95,ease:"power3.out",scrollTrigger:{trigger:el,start:"top 86%",once:true}}));
-   gsap.utils.toArray<HTMLElement>("[data-image-reveal]").forEach(el=>gsap.fromTo(el,{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0% 0 0)",duration:1.35,ease:"power3.inOut",scrollTrigger:{trigger:el,start:"top 84%",once:true}}));
-   gsap.utils.toArray<HTMLElement>("[data-parallax]").forEach(el=>gsap.fromTo(el,{yPercent:-3},{yPercent:3,ease:"none",scrollTrigger:{trigger:el,start:"top bottom",end:"bottom top",scrub:.8}}));
+   // Keep photography in normal document flow. Avoid clip-path and transform animation
+   // on image containers: mobile Safari and some desktop GPUs can leave them partially painted.
    const heroScenes=gsap.utils.toArray<HTMLElement>(".hero-scene");
    if(heroTrack.current&&heroScenes.length){
     const story=gsap.timeline({scrollTrigger:{trigger:heroTrack.current,start:"top top",end:"bottom bottom",scrub:.6}});
