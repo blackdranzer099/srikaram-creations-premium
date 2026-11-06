@@ -86,3 +86,4 @@ test("mobile layout has no horizontal overflow and enquiry is usable", async ({ 
   await expect(dialog.getByLabel("Your name")).toBeVisible();
   await expect(dialog.getByLabel("Email address")).toBeVisible();
 });
+\ntest("remote brand images fail gracefully without broken-image icons", async ({ page }) => {\n  await page.route("https://lh3.googleusercontent.com/**", route => route.abort());\n  await page.goto("/");\n  await page.locator("#collections").scrollIntoViewIfNeeded();\n  await expect(page.locator("img.image-load-failed").first()).toBeAttached({ timeout: 10000 });\n  const brokenVisible = await page.locator("img.image-load-failed").evaluateAll(images => images.some(image => getComputedStyle(image).visibility !== "hidden"));\n  expect(brokenVisible, "failed remote images must be hidden and replaced by styled fallbacks").toBe(false);\n  await expect(page.locator(".has-image-fallback").first()).toBeVisible();\n});\n
