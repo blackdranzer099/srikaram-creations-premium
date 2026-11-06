@@ -77,7 +77,7 @@ function App() {
   update();window.addEventListener("scroll",update,{passive:true});window.addEventListener("resize",update);
   return()=>{window.removeEventListener("scroll",update);window.removeEventListener("resize",update)};
  },[]);
- useEffect(()=>{if(lightbox!==null||enquiryOpen||menuOpen)document.body.style.overflow="hidden";else document.body.style.overflow="";return()=>{document.body.style.overflow=""}},[lightbox,enquiryOpen,menuOpen]);
+ useEffect(()=>{\n  const handleImageError=(event:Event)=>{const target=event.target;if(!(target instanceof HTMLImageElement))return;target.classList.add("image-load-failed");target.setAttribute("aria-hidden","true");target.alt="";target.parentElement?.classList.add("has-image-fallback")};\n  document.addEventListener("error",handleImageError,true);\n  return()=>document.removeEventListener("error",handleImageError,true);\n },[]);\n useEffect(()=>{if(lightbox!==null||enquiryOpen||menuOpen)document.body.style.overflow="hidden";else document.body.style.overflow="";return()=>{document.body.style.overflow=""}},[lightbox,enquiryOpen,menuOpen]);
  useEffect(()=>{const key=(e:KeyboardEvent)=>{if(e.key==="Escape"){setLightbox(null);setEnquiryOpen(false)}if(lightbox!==null&&e.key==="ArrowRight")move(1);if(lightbox!==null&&e.key==="ArrowLeft")move(-1)};window.addEventListener("keydown",key);return()=>window.removeEventListener("keydown",key)},[lightbox,activeIndex,filtered]);
  return <div className="site-shell">
   <div className="announcement"><span>THOUGHTFUL GESTURES. BEAUTIFULLY MADE.</span><span className="announcement-right">A LITTLE MORE MEANING IN EVERY MOMENT <b>✳</b></span></div>
