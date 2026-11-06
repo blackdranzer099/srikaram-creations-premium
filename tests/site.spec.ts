@@ -53,7 +53,8 @@ test("enquiry dialog validates fields and prepares an email draft", async ({ pag
   await dialog.getByLabel("Email address").fill("qa@example.com");
   await dialog.getByLabel("Tell us a little more").fill("Automated browser test only");
   await expect(dialog.getByRole("button", { name: /OPEN EMAIL DRAFT/i })).toBeEnabled();
-  await expect(dialog.locator("form")).toHaveAttribute("novalidate", /./).catch(() => {});
+  await expect(dialog.getByLabel("Your name")).toHaveValue("QA Test");
+  await expect(dialog.getByLabel("Email address")).toHaveValue("qa@example.com");
   await dialog.getByRole("button", { name: "Close enquiry form" }).click();
   await expect(dialog).toHaveCount(0);
 });
