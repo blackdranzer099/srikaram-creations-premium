@@ -122,3 +122,15 @@ test("reduced-motion mode keeps the hero readable without scroll animation", asy
   await expect(page.locator(".hero-scene.scene-active")).toBeVisible();
   await context.close();
 });
+
+test("below-the-fold photography is deferred and images decode asynchronously", async ({ page }) => {
+  await page.goto("/");
+  const belowFold = page.locator(".intro-photo img, .story-photo img, .atmosphere > img, .corporate-image img, .final-cta > img");
+  await expect(belowFold).toHaveCount(5);
+  const attributes = await belowFold.evaluateAll(images => images.map(image => ({
+    loading: image.getAttribute("loading"),
+    decoding: image.getAttribute("decoding"),
+  })));
+  expect(attributes.every(item => item.loading === "lazy" && item.decoding === "async")).toBeTruthy();
+  await expect(page.locator(".cinema-bg")).toHaveAttribute("preload", "metadata");
+});
