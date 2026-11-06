@@ -29,3 +29,40 @@ img.image-load-failed{visibility:hidden!important}
 .has-image-fallback{background:linear-gradient(135deg,#d8cbb5 0%,#b8a58a 48%,#8e806d 100%);position:relative}
 .has-image-fallback::after{content:"SRIKARAM CREATIONS";position:absolute;inset:auto 14px 14px auto;color:rgba(255,255,255,.78);font-size:8px;letter-spacing:.18em;pointer-events:none}
 .cinema-sticky{background:radial-gradient(ellipse at 68% 42%,#66533a 0%,#29251f 48%,#111210 100%)}
+
+/* Premium editorial refinement */
+:root{--sand:#e9e1d3;--parchment:#f5f0e7;--ink:#211e19;--dark:#10110e;--gold:#a98a55;--gold-hover:#d9c39a;--line:rgba(33,30,25,.16)}
+.announcement{height:34px;letter-spacing:.24em}
+.header{height:88px;padding-inline:6.2%;background:rgba(245,240,231,.92);box-shadow:0 8px 30px rgba(28,24,18,.035)}
+.wordmark-main{font-size:38px;letter-spacing:-2px}
+.nav{gap:clamp(18px,3vw,42px);font-size:9px;letter-spacing:.16em}
+.header-cta,.button{letter-spacing:.16em}
+.cinema-sticky{background:#151611}
+.cinema-bg{filter:saturate(.78) contrast(1.04);transform-origin:center;animation:cinemaDrift 24s ease-in-out infinite alternate}
+.cinema-scrim{background:linear-gradient(90deg,rgba(9,10,8,.72),rgba(9,10,8,.12) 75%),linear-gradient(0deg,rgba(9,10,8,.42),transparent 58%)}
+.hero-scene h1{font-size:clamp(76px,9vw,132px);letter-spacing:-.055em;line-height:.82}
+.hero-scene h1 em,.chapter h2 em,.section-heading h2 em,.gallery-heading h2 em,.experience-heading h2 em{color:#b59a6a}
+.section-pad{padding-left:7%;padding-right:7%}
+.chapter-top{letter-spacing:.18em}
+.intro h2,.section-heading h2,.gallery-heading h2,.experience-heading h2{letter-spacing:-.055em}
+.intro-photo,.story-photo,.atmosphere,.collection-image,.gallery-image,.experience-image{border-radius:2px}
+.collection-grid{gap:24px;grid-template-columns:1.08fr .92fr 1.08fr .92fr}
+.collection-image{box-shadow:0 22px 55px rgba(40,32,22,.13)}
+.collection-card h3,.gallery-title{letter-spacing:-.025em}
+.gallery-grid{gap:54px 26px}
+.gallery-image{box-shadow:0 22px 58px rgba(42,34,24,.12)}
+.gallery-glass{border-radius:2px}
+.filter-pill{border-radius:2px}
+.filter-pill.active{background:#28271f;border-color:#28271f;box-shadow:none}
+.experience-image{box-shadow:0 28px 65px rgba(40,32,22,.15)}
+.experience-detail{border-radius:2px}
+.corporate{background:#151611}
+.faq-item button{font-size:23px}
+.final-cta{height:720px}
+.final-shade{background:linear-gradient(0deg,rgba(8,9,8,.74),rgba(8,9,8,.18)),radial-gradient(ellipse at center,rgba(10,11,10,.16),rgba(10,11,10,.68))}
+.footer{padding-inline:7%}
+.button-gold{box-shadow:0 8px 24px rgba(169,138,85,.16)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+@media(max-width:1000px){.collection-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.header{height:72px}.wordmark-main{font-size:32px}.hero-scene h1{font-size:clamp(58px,13vw,82px)}.section-pad{padding-left:6%;padding-right:6%}.final-cta{height:590px}.collection-grid{gap:30px 14px}}
+@media(prefers-reduced-motion:reduce){.cinema-bg{animation:none}}
