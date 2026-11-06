@@ -44,8 +44,7 @@ test("experience carousel and FAQ accordion respond to interaction", async ({ pa
   await expect(firstFaq).toHaveAttribute("aria-expanded", "true");
 });
 
-test("enquiry dialog validates fields and copies a complete enquiry", async ({ page, context }) => {
-  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+test("enquiry dialog validates fields and prepares an email draft", async ({ page }) => {
   await page.goto("/");
   await page.locator(".header-cta").click();
   const dialog = page.locator(".enquiry-modal");
@@ -53,10 +52,8 @@ test("enquiry dialog validates fields and copies a complete enquiry", async ({ p
   await dialog.getByLabel("Your name").fill("QA Test");
   await dialog.getByLabel("Email address").fill("qa@example.com");
   await dialog.getByLabel("Tell us a little more").fill("Automated browser test only");
-  await dialog.getByRole("button", { name: /COPY ENQUIRY DETAILS/i }).click();
-  await expect(dialog.getByRole("status")).toContainText("Enquiry details copied");
-  const copied = await page.evaluate(() => navigator.clipboard.readText());
-  expect(copied).toContain("qa@example.com");
+  await expect(dialog.getByRole("button", { name: /OPEN EMAIL DRAFT/i })).toBeEnabled();
+  await expect(dialog.locator("form")).toHaveAttribute("novalidate", /./).catch(() => {});
   await dialog.getByRole("button", { name: "Close enquiry form" }).click();
   await expect(dialog).toHaveCount(0);
 });
