@@ -87,12 +87,15 @@ test("mobile layout has no horizontal overflow and enquiry is usable", async ({ 
   await expect(dialog.getByLabel("Email address")).toBeVisible();
 });
 
-test("remote brand images fail gracefully without broken-image icons", async ({ page }) => {
-  await page.route("https://lh3.googleusercontent.com/**", route => route.abort());
+test("brand photography is served from local optimized assets", async ({ page }) => {
+  const failedImages: string[] = [];
+  page.on("requestfailed", request => {
+    if (request.url().includes("/images/official-site-image-")) failedImages.push(request.url());
+  });
   await page.goto("/");
   await page.locator("#collections").scrollIntoViewIfNeeded();
-  await expect(page.locator("img.image-load-failed").first()).toBeAttached({ timeout: 10000 });
-  const brokenVisible = await page.locator("img.image-load-failed").evaluateAll(images => images.some(image => getComputedStyle(image).visibility !== "hidden"));
-  expect(brokenVisible, "failed remote images must be hidden and replaced by styled fallbacks").toBe(false);
-  await expect(page.locator(".has-image-fallback").first()).toBeVisible();
+  const localImages = page.locator('img[src^="/images/official-site-image-"]');
+  await expect(localImages.first()).toBeAttached();
+  await expect.poll(async () => localImages.evaluateAll(images => images.filter(image => image.complete && image.naturalWidth > 0).length)).toBeGreaterThan(0);
+  expect(failedImages, "local brand images should load without network failures").toEqual([]);
 });
