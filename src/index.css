@@ -131,7 +131,7 @@ body{font-family:"Manrope",sans-serif;font-size:16px;line-height:1.55}
 .header-cta:focus-visible,.button:focus-visible,.menu-toggle:focus-visible,.carousel-controls button:focus-visible,.dot:focus-visible,.filter-pill:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
 .menu-toggle{position:relative;z-index:43}
 @media(max-width:700px){
- .header{z-index:42}
+ .header{z-index:42;backdrop-filter:none}
  .nav,.nav.nav-open{position:fixed;inset:0;z-index:41;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:clamp(18px,5vh,38px);padding:90px 10vw 12vh;background:var(--parchment);border:0;opacity:0;visibility:hidden;transform:translateY(-12px);transition:opacity .3s var(--ease-out),transform .3s var(--ease-out),visibility .3s}
  .nav.nav-open{opacity:1;visibility:visible;transform:translateY(0)}
  .nav a{font-size:clamp(28px,8vw,42px);font-weight:600;letter-spacing:-.04em;text-transform:none}
