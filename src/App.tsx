@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent, type SyntheticEvent } from "react";
 import { ArrowRight, ArrowUpRight, Check, ChevronDown, ChevronLeft, ChevronRight, Menu, X, Sparkles, Heart, Gift, Package } from "lucide-react";
 
 const photos = [
@@ -31,7 +31,7 @@ const faqs = [
  ["How do I enquire about pricing and availability?","Send an enquiry with the product type, quantity and occasion. The team will help you with suitable options and availability."]
 ];
 type Enquiry = {name:string;email:string;occasion:string;quantity:string;message:string};
-const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
+const handleImageError = (event: SyntheticEvent<HTMLImageElement>) => {
  const image = event.currentTarget;
  image.style.display = "none";
  const container = image.parentElement;
