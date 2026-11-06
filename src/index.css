@@ -148,7 +148,6 @@ body{font-family:"Manrope",sans-serif;font-size:16px;line-height:1.55}
 @media(prefers-reduced-motion:reduce){.nav,.nav.nav-open,.nav a::after{transition:none}}
 
 /* Srikaram Creations — luxury editorial art direction */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap');
 :root{
  --sand:#f4efe6;--parchment:#faf7f1;--ink:#29231e;--dark:#211d19;
  --gold:#a88b5e;--gold-hover:#c7ad83;--muted:#81766a;--line:rgba(41,35,30,.16);
